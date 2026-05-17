@@ -1,0 +1,98 @@
+package li.sata.animetoanime;
+
+import li.sata.animetoanime.jaikanmodels.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import pw.mihou.jaikan.Jaikan;
+import pw.mihou.jaikan.endpoints.Endpoints;
+import pw.mihou.jaikan.models.Anime;
+
+@SpringBootTest
+class AnimetoanimeApplicationTests {
+	JaikanRepository repo = new JaikanRepository();
+	int malid = 12403;
+
+	@Test
+	void defaultJaikanEndPointTest(){
+		Anime first = null;
+
+		try{
+			List<Anime> yuruSearch = Jaikan.list(Endpoints.SEARCH, Anime.class, "anime", "Yuru Yuri").get();
+			first = yuruSearch.get(0);
+		}
+
+		catch(Exception e) {
+			e.printStackTrace(System.err);
+		}
+
+		assertFalse(first == null);
+		assertEquals(first.title, "Yuru Yuri♪♪");
+		assertEquals(first.status, "Finished Airing");
+
+//		System.out.println(first.title);
+//		System.out.println(first.status);
+	}
+
+	@Test
+	void staffEndpointTest(){
+		JaikanStaff first = null;
+
+		try{
+			List<JaikanStaff> yuruStaff = Jaikan.list(repo.staffEndpoint, JaikanStaff.class, malid).get();
+			first = yuruStaff.get(0);
+		}
+
+		catch(Exception e) {
+			e.printStackTrace(System.err);
+		}
+
+		assertFalse(first == null);
+		assertEquals(first.person.name, "Kamata, Hajime");
+		assertEquals(first.positions.get(0), "Producer");
+
+//		System.out.println(first.person.name);
+//		System.out.println(first.positions.get(0));
+	}
+
+	@Test
+	void charEndpointTest(){
+		JaikanCharacter first = null;
+
+		try{
+			List<JaikanCharacter> yuruChars = Jaikan.list(repo.characterEndpoint, JaikanCharacter.class, malid).get();
+			first = yuruChars.get(0);
+		}
+
+		catch(Exception e) {
+			e.printStackTrace(System.err);
+		}
+
+		assertFalse(first == null);
+		assertEquals(first.character.name, "Akaza, Akari");
+		assertEquals(first.role, "Main");
+
+//		System.out.println(first.character.name);
+//		System.out.println(first.role);
+	}
+
+	@Test
+	void randomEndpointTest(){
+		Anime rand = null;
+
+		try{
+			rand = Jaikan.object(repo.randomEndpoint, Anime.class).get();
+		}
+
+		catch(Exception e) {
+			e.printStackTrace(System.err);
+		}
+
+		assertFalse(rand == null);
+
+//		System.out.println(rand.title);
+	}
+}
