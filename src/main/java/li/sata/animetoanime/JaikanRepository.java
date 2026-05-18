@@ -8,9 +8,10 @@ import org.springframework.stereotype.Repository;
 
 import li.sata.animetoanime.genericmodels.Staff;
 import li.sata.animetoanime.genericmodels.Anime;
+import li.sata.animetoanime.jaikanmodels.JaikanAnimePosition;
 import li.sata.animetoanime.jaikanmodels.JaikanCharacter;
 import li.sata.animetoanime.jaikanmodels.JaikanStaff;
-
+import li.sata.animetoanime.jaikanmodels.JaikanVoicePosition;
 import pw.mihou.jaikan.Jaikan;
 // import pw.mihou.jaikan.models.Anime;
 import pw.mihou.jaikan.endpoints.Endpoint;
@@ -64,6 +65,24 @@ public class JaikanRepository {
     }
 
     public List<Anime> getStaffAnime(int malid) {
-        return null;
+        List<JaikanAnimePosition> jaikanAnimePositionList = null;
+        List<JaikanVoicePosition> jaikanVoicePositionList = null;
+
+        try {
+            jaikanAnimePositionList = Jaikan.list(staffAnimeEndpoint, JaikanAnimePosition.class, malid).get();
+            jaikanVoicePositionList = Jaikan.list(staffVoicesEndpoint, JaikanVoicePosition.class, malid).get();
+        } 
+
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        // combine overlapping voice and staff roles for anime
+        HashMap<Integer, Anime> animeMap = new HashMap<>();
+        Anime.fromJaikanAnimePositions(jaikanAnimePositionList, animeMap);
+        Anime.fromJaikanVoicePositions(jaikanVoicePositionList, animeMap);
+
+        return new ArrayList<>(animeMap.values());
     }
 }

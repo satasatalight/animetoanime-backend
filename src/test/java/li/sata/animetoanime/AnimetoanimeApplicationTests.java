@@ -15,7 +15,8 @@ import pw.mihou.jaikan.models.Anime;
 @SpringBootTest
 class AnimetoanimeApplicationTests {
 	JaikanRepository repo = new JaikanRepository();
-	int malid = 12403;
+	int animeid = 12403;
+	int staffid = 504;
 
 	@Test
 	void defaultJaikanEndPointTest(){
@@ -43,7 +44,7 @@ class AnimetoanimeApplicationTests {
 		JaikanStaff first = null;
 
 		try{
-			List<JaikanStaff> yuruStaff = Jaikan.list(repo.animeStaffEndpoint, JaikanStaff.class, malid).get();
+			List<JaikanStaff> yuruStaff = Jaikan.list(repo.animeStaffEndpoint, JaikanStaff.class, animeid).get();
 			first = yuruStaff.get(0);
 		}
 
@@ -64,7 +65,7 @@ class AnimetoanimeApplicationTests {
 		JaikanCharacter first = null;
 
 		try{
-			List<JaikanCharacter> yuruChars = Jaikan.list(repo.animeCharacterEndpoint, JaikanCharacter.class, malid).get();
+			List<JaikanCharacter> yuruChars = Jaikan.list(repo.animeCharacterEndpoint, JaikanCharacter.class, animeid).get();
 			first = yuruChars.get(0);
 		}
 
@@ -99,7 +100,7 @@ class AnimetoanimeApplicationTests {
 
 	@Test
 	void jaikanStaffTest() {
-		List<Staff> staff = repo.getAnimeStaff(malid);
+		List<Staff> staff = repo.getAnimeStaff(animeid);
 		assertFalse(staff == null);
 		assertFalse(staff.size() == 0);
 
@@ -108,6 +109,21 @@ class AnimetoanimeApplicationTests {
 		//	System.out.println("\t" + s.positions);
 		//	System.out.println("\t" + s.imageUrl);
 		//	System.out.println("\t" + s.id);
+		//	System.out.println();
+		//}
+	}
+
+	@Test
+	void jaikanAnimeTest() {
+		List<li.sata.animetoanime.genericmodels.Anime> anime = repo.getStaffAnime(staffid);
+		assertFalse(anime == null);
+		assertFalse(anime.size() == 0);
+
+		//for(li.sata.animetoanime.genericmodels.Anime a : anime) {
+		//	System.out.println(a.title);
+		//	System.out.println("\t" + a.role);
+		//	System.out.println("\t" + a.imageUrl);
+		//	System.out.println("\t" + a.id);
 		//	System.out.println();
 		//}
 	}
