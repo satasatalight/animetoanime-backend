@@ -18,7 +18,7 @@ import pw.mihou.jaikan.endpoints.Endpoint;
 import pw.mihou.jaikan.endpoints.Endpoints;
 
 @Repository
-public class JaikanRepository {
+public class JaikanRepository implements AnimeRepository {
     Endpoint animeStaffEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/anime/{}/staff");
     Endpoint animeCharacterEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/anime/{}/characters");
     Endpoint staffAnimeEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/people/{}/anime");

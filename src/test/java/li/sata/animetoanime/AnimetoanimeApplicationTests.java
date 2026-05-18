@@ -1,5 +1,6 @@
 package li.sata.animetoanime;
 
+//import li.sata.animetoanime.genericmodels.Anime;
 import li.sata.animetoanime.genericmodels.Staff;
 import li.sata.animetoanime.jaikanmodels.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
