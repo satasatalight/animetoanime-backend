@@ -8,10 +8,19 @@ import li.sata.animetoanime.jaikanmodels.JaikanVoiceActor;
 public class VoiceActor extends Staff {
     List<Character> characters;
 
+    VoiceActor(Staff staff) {
+        this.name = staff.name;
+        this.positions = staff.positions;
+        this.imageUrl = staff.imageUrl;
+        this.id = staff.id;
+        this.characters = new ArrayList<>();
+    }
+
     VoiceActor(JaikanVoiceActor jaikanVoiceActor) {
-        characters = new ArrayList<>();
         this.name = jaikanVoiceActor.person.name;
+        this.positions = new ArrayList<>();
         this.imageUrl = jaikanVoiceActor.person.images.firstDefault();
         this.id = jaikanVoiceActor.person.id;
+        this.characters = new ArrayList<>();
     }
 }

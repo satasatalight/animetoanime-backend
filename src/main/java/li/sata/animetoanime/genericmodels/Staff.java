@@ -23,30 +23,40 @@ public class Staff {
         this.id = jaikanStaff.person.id;
     }
 
-    public static List<Staff> fromJaikanStaff(List<JaikanStaff> jaikanStaff) {
-        List<Staff> staffList = new ArrayList<>();
+    // place initial list of staff into map
+    public static void fromJaikanStaff(List<JaikanStaff> jaikanStaff, HashMap<Integer, Staff> staffMap) {
         for (JaikanStaff staff : jaikanStaff) {
-            staffList.add(new Staff(staff));
+            Staff newStaff = new Staff(staff);
+            staffMap.put(staff.person.id, newStaff);
         }
-        return staffList;
     }
 
     // extract a full list of voice actors from a character list (one voice actor can voice multiple characters in the same anime)
-    public static List<Staff> fromJaikanCharacters(List<JaikanCharacter> jaikanCharacters) {
-        HashMap<Integer, VoiceActor> voiceActorMap = new HashMap<>(); // malid -> VoiceActor pairs
+    public static void fromJaikanCharacters(List<JaikanCharacter> jaikanCharacters, HashMap<Integer, Staff> staffMap) {
         for(JaikanCharacter jaikanCharacter : jaikanCharacters) {
-            fromJaikanCharacter(jaikanCharacter, voiceActorMap);
+            fromJaikanCharacter(jaikanCharacter, staffMap);
         }
-        return new ArrayList<>(voiceActorMap.values());
     }
 
-    // add all VA's from one character into actor map
-    static void fromJaikanCharacter(JaikanCharacter jaikanCharacter, HashMap<Integer, VoiceActor> voiceActorMap) {
+    // merge all VA's from one character into actor map
+    static void fromJaikanCharacter(JaikanCharacter jaikanCharacter, HashMap<Integer, Staff> staffMap) {
         for(JaikanVoiceActor jaikanVoiceActor : jaikanCharacter.voiceActors) {
-            VoiceActor actor = voiceActorMap.getOrDefault(jaikanVoiceActor.person.id, new VoiceActor(jaikanVoiceActor));
+            Staff staff = staffMap.getOrDefault(jaikanVoiceActor.person.id, new VoiceActor(jaikanVoiceActor));
+            VoiceActor actor;
+
+            // cast up to VA for existing voice actors
+            if(staff instanceof VoiceActor) {
+                actor = (VoiceActor) staff;
+            } 
+            
+            // convert staff to VA for staff members who also have voice acting roles
+            else {
+                actor = new VoiceActor(staff);
+            }
+
             actor.positions.add("Voices " + jaikanCharacter.character.name + " in " + jaikanVoiceActor.language);
             actor.characters.add(new Character(jaikanCharacter.character.name, jaikanCharacter.character.images.firstDefault()));
-            voiceActorMap.put(jaikanVoiceActor.person.id, actor);
+            staffMap.put(jaikanVoiceActor.person.id, actor);
         }
     }
 

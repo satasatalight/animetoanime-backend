@@ -1,5 +1,6 @@
 package li.sata.animetoanime;
 
+import li.sata.animetoanime.genericmodels.Staff;
 import li.sata.animetoanime.jaikanmodels.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -42,7 +43,7 @@ class AnimetoanimeApplicationTests {
 		JaikanStaff first = null;
 
 		try{
-			List<JaikanStaff> yuruStaff = Jaikan.list(repo.staffEndpoint, JaikanStaff.class, malid).get();
+			List<JaikanStaff> yuruStaff = Jaikan.list(repo.animeStaffEndpoint, JaikanStaff.class, malid).get();
 			first = yuruStaff.get(0);
 		}
 
@@ -63,7 +64,7 @@ class AnimetoanimeApplicationTests {
 		JaikanCharacter first = null;
 
 		try{
-			List<JaikanCharacter> yuruChars = Jaikan.list(repo.characterEndpoint, JaikanCharacter.class, malid).get();
+			List<JaikanCharacter> yuruChars = Jaikan.list(repo.animeCharacterEndpoint, JaikanCharacter.class, malid).get();
 			first = yuruChars.get(0);
 		}
 
@@ -94,5 +95,20 @@ class AnimetoanimeApplicationTests {
 		assertFalse(rand == null);
 
 //		System.out.println(rand.title);
+	}
+
+	@Test
+	void jaikanStaffTest() {
+		List<Staff> staff = repo.getAnimeStaff(malid);
+		assertFalse(staff == null);
+		assertFalse(staff.size() == 0);
+
+		//for(Staff s : staff) {
+		//	System.out.println(s.name);
+		//	System.out.println("\t" + s.positions);
+		//	System.out.println("\t" + s.imageUrl);
+		//	System.out.println("\t" + s.id);
+		//	System.out.println();
+		//}
 	}
 }

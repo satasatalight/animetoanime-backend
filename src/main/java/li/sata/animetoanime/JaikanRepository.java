@@ -1,5 +1,7 @@
 package li.sata.animetoanime;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -16,8 +18,10 @@ import pw.mihou.jaikan.endpoints.Endpoints;
 
 @Repository
 public class JaikanRepository {
-    Endpoint staffEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/anime/{}/staff");
-    Endpoint characterEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/anime/{}/characters");
+    Endpoint animeStaffEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/anime/{}/staff");
+    Endpoint animeCharacterEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/anime/{}/characters");
+    Endpoint staffAnimeEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/people/{}/anime");
+    Endpoint staffVoicesEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/people/{}/voices");
     Endpoint randomEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/random/anime?sfw");
 
     public Anime getRandomAnime() {
@@ -41,8 +45,8 @@ public class JaikanRepository {
         List<JaikanCharacter> jaikanCharacterList = null;
 
         try {
-            jaikanStaffList = Jaikan.list(staffEndpoint, JaikanStaff.class, malid).get();
-            jaikanCharacterList = Jaikan.list(characterEndpoint, JaikanCharacter.class, malid).get();
+            jaikanStaffList = Jaikan.list(animeStaffEndpoint, JaikanStaff.class, malid).get();
+            jaikanCharacterList = Jaikan.list(animeCharacterEndpoint, JaikanCharacter.class, malid).get();
         } 
 
         catch (Exception e) {
@@ -50,12 +54,13 @@ public class JaikanRepository {
             return null;
         }
 
-        // combine staff list and voice actor's list
-        // maybe keep separate ?
-        List<Staff> staffList = Staff.fromJaikanStaff(jaikanStaffList);
-        staffList.addAll(Staff.fromJaikanCharacters(jaikanCharacterList));
+        // staff and character actors can overlap
+        // use hashmap to avoid duplicates and merge VA's who also have staff positions
+        HashMap<Integer, Staff> staffMap = new HashMap<>();
+        Staff.fromJaikanStaff(jaikanStaffList, staffMap);
+        Staff.fromJaikanCharacters(jaikanCharacterList, staffMap);
 
-        return staffList;
+        return new ArrayList<>(staffMap.values());
     }
 
     public List<Anime> getStaffAnime(int malid) {
