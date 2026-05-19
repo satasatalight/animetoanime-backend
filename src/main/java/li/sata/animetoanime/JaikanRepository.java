@@ -1,8 +1,10 @@
 package li.sata.animetoanime;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Repository;
 
@@ -24,6 +26,12 @@ public class JaikanRepository implements AnimeRepository {
     Endpoint staffAnimeEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/people/{}/anime");
     Endpoint staffVoicesEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/people/{}/voices");
     Endpoint randomEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/random/anime?sfw");
+
+    JaikanRepository() {
+        Jaikan.setConfiguration(builder -> builder
+            .setRatelimit(Duration.ofSeconds(2))
+            .build());
+    }
 
     public Anime getRandomAnime() {
         Anime anime = null;

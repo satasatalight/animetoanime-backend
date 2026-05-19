@@ -1,6 +1,7 @@
 package li.sata.animetoanime;
 
-//import li.sata.animetoanime.genericmodels.Anime;
+import li.sata.animetoanime.genericmodels.Anime;
+import li.sata.animetoanime.genericmodels.Entry;
 import li.sata.animetoanime.genericmodels.Staff;
 import li.sata.animetoanime.jaikanmodels.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,20 +12,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import pw.mihou.jaikan.Jaikan;
 import pw.mihou.jaikan.endpoints.Endpoints;
-import pw.mihou.jaikan.models.Anime;
+//import pw.mihou.jaikan.models.Anime;
 
 @SpringBootTest
-class AnimetoanimeApplicationTests {
+class JaikanTests {
 	JaikanRepository repo = new JaikanRepository();
 	int animeid = 12403;
 	int staffid = 504;
 
 	@Test
 	void defaultJaikanEndPointTest(){
-		Anime first = null;
+		pw.mihou.jaikan.models.Anime first = null;
 
 		try{
-			List<Anime> yuruSearch = Jaikan.list(Endpoints.SEARCH, Anime.class, "anime", "Yuru Yuri").get();
+			List<pw.mihou.jaikan.models.Anime> yuruSearch = Jaikan.list(Endpoints.SEARCH, pw.mihou.jaikan.models.Anime.class, "anime", "Yuru Yuri").get();
 			first = yuruSearch.get(0);
 		}
 
@@ -84,10 +85,10 @@ class AnimetoanimeApplicationTests {
 
 	@Test
 	void randomEndpointTest(){
-		Anime rand = null;
+		pw.mihou.jaikan.models.Anime rand = null;
 
 		try{
-			rand = Jaikan.object(repo.randomEndpoint, Anime.class).get();
+			rand = Jaikan.object(repo.randomEndpoint, pw.mihou.jaikan.models.Anime.class).get();
 		}
 
 		catch(Exception e) {
@@ -116,16 +117,43 @@ class AnimetoanimeApplicationTests {
 
 	@Test
 	void jaikanAnimeTest() {
-		List<li.sata.animetoanime.genericmodels.Anime> anime = repo.getStaffAnime(staffid);
+		List<Anime> anime = repo.getStaffAnime(staffid);
 		assertFalse(anime == null);
 		assertFalse(anime.size() == 0);
 
 		//for(li.sata.animetoanime.genericmodels.Anime a : anime) {
-		//	System.out.println(a.title);
+		//	System.out.println(a.name);
 		//	System.out.println("\t" + a.role);
 		//	System.out.println("\t" + a.imageUrl);
 		//	System.out.println("\t" + a.id);
 		//	System.out.println();
 		//}
+	}
+}
+
+@SpringBootTest
+class AnimeToAnimeServiceTests {
+	Anime anime1 = new Anime();
+	Anime anime2 = new Anime();
+
+	AnimeToAnimeServiceTests(){
+		anime1.id = 486; 
+		anime2.id = 4143; 
+		anime1.name = "Kino's journey -the beautiful world-";
+		anime2.name = "Akudama Drive";
+	}
+
+	AnimeToAnimeService service = new AnimeToAnimeService(new JaikanRepository());
+
+	@Test
+	void calculateShortestPathTest() {
+		List<Entry> path = service.calculateShortestPath(anime1, anime2);
+		assertFalse(path == null);
+		assertFalse(path.size() == 0);
+
+		for(Entry e : path) {
+			System.out.print(e.name + " -> ");
+		}
+		System.out.println();
 	}
 }

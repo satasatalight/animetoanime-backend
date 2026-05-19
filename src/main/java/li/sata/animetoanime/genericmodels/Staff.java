@@ -1,6 +1,5 @@
 package li.sata.animetoanime.genericmodels;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -8,11 +7,8 @@ import li.sata.animetoanime.jaikanmodels.JaikanCharacter;
 import li.sata.animetoanime.jaikanmodels.JaikanStaff;
 import li.sata.animetoanime.jaikanmodels.JaikanVoiceActor;
 
-public class Staff {
-    public String name;
+public class Staff extends Entry {
     public List<String> positions;
-    public String imageUrl;
-    public int id;
 
     Staff() {}
 
@@ -58,9 +54,5 @@ public class Staff {
             actor.characters.add(new Character(jaikanCharacter.character.name, jaikanCharacter.character.images.firstDefault()));
             staffMap.put(jaikanVoiceActor.person.id, actor);
         }
-    }
-
-    public boolean equals(Staff other) {
-        return this.id == other.id;
     }
 }
