@@ -4,12 +4,12 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Repository;
 
 import li.sata.animetoanime.genericmodels.Staff;
 import li.sata.animetoanime.genericmodels.Anime;
+import li.sata.animetoanime.genericmodels.Entry;
 import li.sata.animetoanime.jaikanmodels.JaikanAnimePosition;
 import li.sata.animetoanime.jaikanmodels.JaikanCharacter;
 import li.sata.animetoanime.jaikanmodels.JaikanStaff;
@@ -21,6 +21,9 @@ import pw.mihou.jaikan.endpoints.Endpoints;
 
 @Repository
 public class JaikanRepository implements AnimeRepository {
+    // list of ids that returned 500 http codes from jaikan
+    public static ArrayList<Integer> skippedIds= new ArrayList<>();
+
     Endpoint animeStaffEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/anime/{}/staff");
     Endpoint animeCharacterEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/anime/{}/characters");
     Endpoint staffAnimeEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/people/{}/anime");
@@ -29,7 +32,7 @@ public class JaikanRepository implements AnimeRepository {
 
     JaikanRepository() {
         Jaikan.setConfiguration(builder -> builder
-            .setRatelimit(Duration.ofSeconds(2))
+            .setRatelimit(Duration.ofMillis(500))
             .build());
     }
 
@@ -59,8 +62,9 @@ public class JaikanRepository implements AnimeRepository {
         } 
 
         catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            System.out.println(e.getMessage());
+            skippedIds.add(malid);
+            return new ArrayList<>();
         }
 
         // staff and character actors can overlap
@@ -82,8 +86,9 @@ public class JaikanRepository implements AnimeRepository {
         } 
 
         catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            System.out.println(e.getMessage());
+            skippedIds.add(malid);
+            return new ArrayList<>();
         }
 
         // combine overlapping voice and staff roles for anime

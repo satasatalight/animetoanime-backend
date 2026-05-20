@@ -29,7 +29,7 @@ public class AnimeToAnimeService {
     }
 
     public List<Entry> calculateShortestPath(Anime start, Anime end){
-        Queue<Entry> queue = new LinkedList<>();
+        LinkedList<Entry> queue = new LinkedList<>();
         HashMap<Integer, Entry> parentMap = new HashMap<>(); // use parent map for checking visited and reconstructing path
 
         parentMap.put(start.id, null);
@@ -49,12 +49,13 @@ public class AnimeToAnimeService {
             if(current instanceof Anime){
                 children.addAll(repo.getAnimeStaff(current.id));
             } 
+
             else if(current instanceof Staff){
                 children.addAll(repo.getStaffAnime(current.id));
             }
 
             // peek for end in children to avoid adding unnecessary nodes to the queue
-            if(children.contains(end)){
+            if(current instanceof Staff && children.contains(end)){
                 parentMap.put(end.id, current);
                 return reconstructPath(parentMap, end);
             }
@@ -62,7 +63,14 @@ public class AnimeToAnimeService {
             for(Entry child : children){
                 if(!parentMap.containsKey(child.id)){
                     parentMap.put(child.id, current);
-                    queue.add(child);
+
+                    if(child instanceof Anime) {
+                        queue.addLast(child);
+                    } 
+                    
+                    else if(child instanceof Staff) {
+                        queue.addFirst(child);
+                    }
                 }
             }
         }

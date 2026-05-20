@@ -18,7 +18,7 @@ import pw.mihou.jaikan.endpoints.Endpoints;
 class JaikanTests {
 	JaikanRepository repo = new JaikanRepository();
 	int animeid = 12403;
-	int staffid = 504;
+	int staffid = 203;
 
 	@Test
 	void defaultJaikanEndPointTest(){
@@ -121,13 +121,13 @@ class JaikanTests {
 		assertFalse(anime == null);
 		assertFalse(anime.size() == 0);
 
-		//for(li.sata.animetoanime.genericmodels.Anime a : anime) {
-		//	System.out.println(a.name);
-		//	System.out.println("\t" + a.role);
-		//	System.out.println("\t" + a.imageUrl);
-		//	System.out.println("\t" + a.id);
-		//	System.out.println();
-		//}
+		for(li.sata.animetoanime.genericmodels.Anime a : anime) {
+			System.out.println(a.name);
+			System.out.println("\t" + a.role);
+			System.out.println("\t" + a.imageUrl);
+			System.out.println("\t" + a.id);
+			System.out.println();
+		}
 	}
 }
 
@@ -137,10 +137,10 @@ class AnimeToAnimeServiceTests {
 	Anime anime2 = new Anime();
 
 	AnimeToAnimeServiceTests(){
-		anime1.id = 486; 
-		anime2.id = 4143; 
-		anime1.name = "Kino's journey -the beautiful world-";
-		anime2.name = "Akudama Drive";
+		anime1.id = 55315;
+		anime2.id = 60326;
+		anime1.name = "Touhou Fantasy Kaleidoscope: The Memories of Phantasm";
+		anime2.name = "There's No Freaking Way I'll be Your Lover! Unless...";
 	}
 
 	AnimeToAnimeService service = new AnimeToAnimeService(new JaikanRepository());
@@ -151,9 +151,11 @@ class AnimeToAnimeServiceTests {
 		assertFalse(path == null);
 		assertFalse(path.size() == 0);
 
+		System.out.println();
 		for(Entry e : path) {
 			System.out.print(e.name + " -> ");
 		}
 		System.out.println();
+		System.out.println(JaikanRepository.skippedIds.size() + " cut entries: " + JaikanRepository.skippedIds);
 	}
 }
