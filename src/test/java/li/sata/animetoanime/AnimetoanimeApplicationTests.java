@@ -140,14 +140,26 @@ class AnimeToAnimeServiceTests {
 		anime1.id = 55315;
 		anime2.id = 60326;
 		anime1.name = "Touhou Fantasy Kaleidoscope: The Memories of Phantasm";
-		anime2.name = "There's No Freaking Way I'll be Your Lover! Unless...";
+		anime2.name = "WataNare";
 	}
 
 	AnimeToAnimeService service = new AnimeToAnimeService(new JaikanRepository());
 
 	@Test
 	void calculateShortestPathTest() {
-		List<Entry> path = service.calculateShortestPath(anime1, anime2);
+		Anime start = anime1;
+		Anime end = anime2;
+		JaikanRepository repo = new JaikanRepository();
+
+		List<Staff> staffList1 = repo.getAnimeStaff(anime1.id);
+		List<Staff> staffList2 = repo.getAnimeStaff(anime2.id);
+
+		if(staffList1 != null && staffList2 != null && staffList1.size() > staffList2.size()){
+			start = anime2;
+			end = anime1;
+		}
+
+		List<Entry> path = service.calculateShortestPath(start, end);
 		assertFalse(path == null);
 		assertFalse(path.size() == 0);
 
@@ -156,6 +168,6 @@ class AnimeToAnimeServiceTests {
 			System.out.print(e.name + " -> ");
 		}
 		System.out.println();
-		System.out.println(JaikanRepository.skippedIds.size() + " cut entries: " + JaikanRepository.skippedIds);
+		//System.out.println(JaikanRepository.skippedIds.size() + " cut entries: " + JaikanRepository.skippedIds);
 	}
 }
