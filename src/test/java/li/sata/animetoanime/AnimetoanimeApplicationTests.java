@@ -137,29 +137,18 @@ class AnimeToAnimeServiceTests {
 	Anime anime2 = new Anime();
 
 	AnimeToAnimeServiceTests(){
-		anime1.id = 55315;
-		anime2.id = 60326;
-		anime1.name = "Touhou Fantasy Kaleidoscope: The Memories of Phantasm";
-		anime2.name = "WataNare";
+		anime1.id = 11809;
+		anime2.id = 387;
+		anime1.name = "gdgd fairies";
+		anime2.name = "haibane renmei";
 	}
 
 	AnimeToAnimeService service = new AnimeToAnimeService(new JaikanRepository());
 
 	@Test
 	void calculateShortestPathTest() {
-		Anime start = anime1;
-		Anime end = anime2;
-		JaikanRepository repo = new JaikanRepository();
+		List<Entry> path = service.findShortestPath(anime1, anime2);
 
-		List<Staff> staffList1 = repo.getAnimeStaff(anime1.id);
-		List<Staff> staffList2 = repo.getAnimeStaff(anime2.id);
-
-		if(staffList1 != null && staffList2 != null && staffList1.size() > staffList2.size()){
-			start = anime2;
-			end = anime1;
-		}
-
-		List<Entry> path = service.calculateShortestPath(start, end);
 		assertFalse(path == null);
 		assertFalse(path.size() == 0);
 

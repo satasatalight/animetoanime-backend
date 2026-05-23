@@ -1,6 +1,7 @@
 package li.sata.animetoanime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,7 +29,40 @@ public class AnimeToAnimeService {
         // store in upstash
     }
 
-    public List<Entry> calculateShortestPath(Anime start, Anime end){
+    public List<Entry> findShortestPath(Anime anime1, Anime anime2){
+        // get staff lists for both anime
+		List<Staff> staffList1 = repo.getAnimeStaff(anime1.id);
+		List<Staff> staffList2 = repo.getAnimeStaff(anime2.id);
+
+        // if both are unreachable, give up on search
+        if(staffList1 == null && staffList2 == null)
+            return null;
+
+        // start at reachable anime
+        else if(staffList1 == null)
+            return searchShortestPath(anime2, anime1);
+        else if(staffList2 == null)
+            return searchShortestPath(anime1, anime2);
+
+        // if both are reachable,
+        else{
+            // check for an overlapping staff member
+            List<Staff> intersection = new ArrayList<>(staffList1);
+            intersection.retainAll(staffList2);
+
+            // shortcut answer if both staff lists contain a matching member
+            if(!intersection.isEmpty())
+                return Arrays.asList(anime1, intersection.get(0), anime2);
+
+            // otherwise, start at smaller list
+            if(staffList2.size() > staffList1.size())
+                return searchShortestPath(anime1, anime2);
+            else 
+                return searchShortestPath(anime2, anime1);
+        }
+    }
+
+    private List<Entry> searchShortestPath(Anime start, Anime end){
         Queue<Anime> animeQueue = new LinkedList<>();
 
         HashMap<Integer, Staff> animeParentMap = new HashMap<>(); 
