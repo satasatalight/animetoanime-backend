@@ -3,9 +3,13 @@ package li.sata.animetoanime.genericmodels;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import li.sata.animetoanime.jaikanmodels.JaikanAnimePosition;
 import li.sata.animetoanime.jaikanmodels.JaikanVoicePosition;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class Anime extends Entry {
     public List<String> role;
 

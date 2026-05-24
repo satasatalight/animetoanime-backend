@@ -15,10 +15,10 @@ import li.sata.animetoanime.genericmodels.Staff;
 
 @Service
 public class AnimeToAnimeService {
-    AnimeRepository repo;
+    AnimeService animeService;
 
-    public AnimeToAnimeService(AnimeRepository repo) {
-        this.repo = repo;
+    public AnimeToAnimeService(AnimeService repo) {
+        this.animeService = repo;
     }
 
     public void generateDailyData(){
@@ -31,8 +31,8 @@ public class AnimeToAnimeService {
 
     public List<Entry> findShortestPath(Anime anime1, Anime anime2){
         // get staff lists for both anime
-		List<Staff> staffList1 = repo.getAnimeStaff(anime1.id);
-		List<Staff> staffList2 = repo.getAnimeStaff(anime2.id);
+		List<Staff> staffList1 = animeService.getAnimeStaff(anime1.id);
+		List<Staff> staffList2 = animeService.getAnimeStaff(anime2.id);
 
         // if both are unreachable, give up on search
         if(staffList1 == null && staffList2 == null)
@@ -164,11 +164,11 @@ public class AnimeToAnimeService {
     }
 
     public List<Staff> getAnimeStaff(int id){
-        return repo.getAnimeStaff(id);
+        return animeService.getAnimeStaff(id);
     }
 
     public List<Anime> getStaffAnime(int id){
-        return repo.getStaffAnime(id);
+        return animeService.getStaffAnime(id);
     }
 
     public int getShortestPath(){

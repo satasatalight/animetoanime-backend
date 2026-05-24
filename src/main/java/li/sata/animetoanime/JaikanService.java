@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import li.sata.animetoanime.genericmodels.Staff;
 import li.sata.animetoanime.genericmodels.Anime;
@@ -18,15 +18,15 @@ import pw.mihou.jaikan.Jaikan;
 import pw.mihou.jaikan.endpoints.Endpoint;
 import pw.mihou.jaikan.endpoints.Endpoints;
 
-@Repository
-public class JaikanRepository implements AnimeRepository {
+@Service
+public class JaikanService implements AnimeService {
     Endpoint animeStaffEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/anime/{}/staff");
     Endpoint animeCharacterEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/anime/{}/characters");
     Endpoint staffAnimeEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/people/{}/anime");
     Endpoint staffVoicesEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/people/{}/voices");
     Endpoint randomEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/random/anime?sfw");
 
-    JaikanRepository() {
+    JaikanService() {
         Jaikan.setConfiguration(builder -> builder
             .setRatelimit(Duration.ofMillis(800))
             .build());

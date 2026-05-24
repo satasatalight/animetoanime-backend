@@ -16,7 +16,7 @@ import pw.mihou.jaikan.endpoints.Endpoints;
 
 @SpringBootTest
 class JaikanTests {
-	JaikanRepository repo = new JaikanRepository();
+	JaikanService repo = new JaikanService();
 	int animeid = 12403;
 	int staffid = 203;
 
@@ -143,7 +143,7 @@ class AnimeToAnimeServiceTests {
 		anime2.name = "haibane renmei";
 	}
 
-	AnimeToAnimeService service = new AnimeToAnimeService(new JaikanRepository());
+	AnimeToAnimeService service = new AnimeToAnimeService(new JaikanService());
 
 	@Test
 	void calculateShortestPathTest() {

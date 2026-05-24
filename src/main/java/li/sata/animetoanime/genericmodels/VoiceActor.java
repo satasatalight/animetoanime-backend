@@ -5,6 +5,9 @@ import java.util.List;
 
 import li.sata.animetoanime.jaikanmodels.JaikanVoiceActor;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class VoiceActor extends Staff {
     List<Character> characters;
 
