@@ -1,17 +1,16 @@
 package li.sata.animetoanime.genericmodels;
 
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
 
 @MappedSuperclass
 public abstract class Entry {
     public String name;
     public String imageUrl;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @AttributeOverride(name = "id", column = @Column(name = "entry_id"))
     public int id;
 
     Entry() {}

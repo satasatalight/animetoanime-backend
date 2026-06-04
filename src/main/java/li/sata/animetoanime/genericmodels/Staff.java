@@ -6,13 +6,9 @@ import java.util.List;
 import li.sata.animetoanime.jaikanmodels.JaikanCharacter;
 import li.sata.animetoanime.jaikanmodels.JaikanStaff;
 import li.sata.animetoanime.jaikanmodels.JaikanVoiceActor;
+import jakarta.persistence.Embeddable;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Embeddable
 public class Staff extends Entry {
     public List<String> positions;
 

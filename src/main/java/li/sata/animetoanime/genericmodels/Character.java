@@ -1,5 +1,8 @@
 package li.sata.animetoanime.genericmodels;
 
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public class Character {
     public String name;
     public String imageUrl;

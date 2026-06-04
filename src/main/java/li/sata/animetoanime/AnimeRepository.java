@@ -1,13 +1,10 @@
 package li.sata.animetoanime;
 
-import java.util.List;
-
-import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import li.sata.animetoanime.genericmodels.Staff;
+import li.sata.animetoanime.repomodels.StaffList;
 
 @Repository
-public interface AnimeRepository extends ListCrudRepository<List<Staff>, Integer>{
-    List<Staff> findById(int id);
+public interface AnimeRepository extends CrudRepository<StaffList, Integer>{
 }

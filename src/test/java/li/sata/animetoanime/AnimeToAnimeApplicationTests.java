@@ -4,12 +4,19 @@ import li.sata.animetoanime.genericmodels.Anime;
 import li.sata.animetoanime.genericmodels.Entry;
 import li.sata.animetoanime.genericmodels.Staff;
 import li.sata.animetoanime.jaikanmodels.*;
+import li.sata.animetoanime.repomodels.DailyData;
+import li.sata.animetoanime.repomodels.StaffList;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import pw.mihou.jaikan.Jaikan;
 import pw.mihou.jaikan.endpoints.Endpoints;
 //import pw.mihou.jaikan.models.Anime;
@@ -158,5 +165,67 @@ class AnimeToAnimeServiceTests {
 		}
 		System.out.println();
 		//System.out.println(JaikanRepository.skippedIds.size() + " cut entries: " + JaikanRepository.skippedIds);
+	}
+}
+
+@SpringBootTest
+class RepoTests {
+	Anime anime1 = new Anime();
+	Anime anime2 = new Anime();
+
+	RepoTests(){
+		anime1.id = 11809;
+		anime2.id = 387;
+		anime1.name = "gdgd fairies";
+		anime2.name = "Haibane Renmei";
+	}
+	
+	@Autowired
+	AnimeService service;
+
+	@Autowired
+	AnimeRepository animeRepo;
+
+	@Autowired
+	DailyDataRepository dailyRepo;
+
+	@Test
+	void saveAndGetTest(){
+		List<Staff> stafflist = service.getAnimeStaff(anime2.id);
+		StaffList staffObject = new StaffList(anime2, stafflist);
+
+		animeRepo.deleteById(anime2.id);
+		
+		StaffList fromRepo = animeRepo.findById(anime2.id).orElse(null);
+
+		if(fromRepo == null){
+			animeRepo.save(staffObject);
+			fromRepo = animeRepo.findById(anime2.id).orElse(null);
+		}
+
+		for(Staff a : fromRepo.staffList){
+			System.out.println(a.name);
+			System.out.println("\t" + a.id);
+			System.out.println("\t" + a.imageUrl);
+			System.out.println("\t" + a.positions);
+			System.out.println();
+		}
+
+		assertFalse(fromRepo == null);
+		assertEquals(staffObject, fromRepo);
+	}
+
+	@Test
+	void saveDailyDataTest(){
+		List<Entry> connection = new ArrayList<>();
+		connection = List.of(anime1, anime2);
+
+		dailyRepo.save(new DailyData(anime1, anime2, connection));
+		DailyData fromRepo = dailyRepo.findById(LocalDate.of(2026, 5, 27)).orElse(null);
+
+		assertFalse(fromRepo == null);
+
+		System.out.println(fromRepo.anime1.name);
+		System.out.println(fromRepo.anime2.name);
 	}
 }

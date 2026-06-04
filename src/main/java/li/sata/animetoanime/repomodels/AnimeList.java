@@ -10,19 +10,19 @@ import li.sata.animetoanime.genericmodels.Anime;
 import li.sata.animetoanime.genericmodels.Staff;
 
 @Entity
-public class StaffList {
+public class AnimeList {
     @Id
-    public int id; // unique id corresponding to anime
+    public int id; // unique id corresponding to staff 
 
-    // list of staff involved on anime
+    // list of anime the staff member worked on
     @ElementCollection
     @Embedded
-    public List<Staff> staffList;
+    public List<Anime> animeList;
 
-    public StaffList(Anime a, List<Staff> l){
+    AnimeList(Staff a, List<Anime> l){
         this.id = a.id;
-        this.staffList = l;
+        this.animeList = l;
     }
 
-    public StaffList(){}
+    public AnimeList(){}
 }
