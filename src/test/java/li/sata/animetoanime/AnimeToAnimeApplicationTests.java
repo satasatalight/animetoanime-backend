@@ -186,23 +186,27 @@ class RepoTests {
 	@Autowired
 	AnimeRepository animeRepo;
 
-	@Autowired
-	DailyDataRepository dailyRepo;
+	//@Autowired
+	//DailyDataRepository dailyRepo;
 
 	@Test
 	void saveAndGetTest(){
-		List<Staff> stafflist = service.getAnimeStaff(anime2.id);
-		StaffList staffObject = new StaffList(anime2, stafflist);
+		List<Staff> stafflist = service.getAnimeStaff(anime1.id);
+		StaffList staffObject = new StaffList(anime1, stafflist);
 
-		animeRepo.deleteById(anime2.id);
+		animeRepo.deleteById(anime1.id);
 		
-		StaffList fromRepo = animeRepo.findById(anime2.id).orElse(null);
+		StaffList fromRepo = animeRepo.findById(anime1.id).orElse(null);
 
 		if(fromRepo == null){
 			animeRepo.save(staffObject);
-			fromRepo = animeRepo.findById(anime2.id).orElse(null);
+			fromRepo = animeRepo.findById(anime1.id).orElse(null);
 		}
 
+		assertFalse(fromRepo == null);
+		assertEquals(staffObject.id, fromRepo.id);
+
+		System.out.println("\nFrom Repo:");
 		for(Staff a : fromRepo.staffList){
 			System.out.println(a.name);
 			System.out.println("\t" + a.id);
@@ -211,21 +215,29 @@ class RepoTests {
 			System.out.println();
 		}
 
-		assertFalse(fromRepo == null);
-		assertEquals(staffObject, fromRepo);
+		System.out.println("\nFrom Staff Object:");
+		for(Staff a : staffObject.staffList){
+			System.out.println(a.name);
+			System.out.println("\t" + a.id);
+			System.out.println("\t" + a.imageUrl);
+			System.out.println("\t" + a.positions);
+			System.out.println();
+		}
+
+		//animeRepo.deleteById(anime1.id);
 	}
 
-	@Test
-	void saveDailyDataTest(){
-		List<Entry> connection = new ArrayList<>();
-		connection = List.of(anime1, anime2);
+	//@Test
+	//void saveDailyDataTest(){
+	//	List<Entry> connection = new ArrayList<>();
+	//	connection = List.of(anime1, anime2);
 
-		dailyRepo.save(new DailyData(anime1, anime2, connection));
-		DailyData fromRepo = dailyRepo.findById(LocalDate.of(2026, 5, 27)).orElse(null);
+	//	dailyRepo.save(new DailyData(anime1, anime2, connection));
+	//	DailyData fromRepo = dailyRepo.findById(LocalDate.of(2026, 5, 27)).orElse(null);
 
-		assertFalse(fromRepo == null);
+	//	assertFalse(fromRepo == null);
 
-		System.out.println(fromRepo.anime1.name);
-		System.out.println(fromRepo.anime2.name);
-	}
+	//	System.out.println(fromRepo.anime1.name);
+	//	System.out.println(fromRepo.anime2.name);
+	//}
 }

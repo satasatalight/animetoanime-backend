@@ -1,16 +1,19 @@
 package li.sata.animetoanime.genericmodels;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import li.sata.animetoanime.jaikanmodels.JaikanCharacter;
 import li.sata.animetoanime.jaikanmodels.JaikanStaff;
 import li.sata.animetoanime.jaikanmodels.JaikanVoiceActor;
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
 
-@Embeddable
+@Entity
 public class Staff extends Entry {
-    public List<String> positions;
+    @ElementCollection
+    public List<String> positions = new ArrayList<>();
 
     Staff() {}
 

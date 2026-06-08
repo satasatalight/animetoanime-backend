@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import li.sata.animetoanime.jaikanmodels.JaikanVoiceActor;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Embedded;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
 
-@Embeddable
+@Entity
 public class VoiceActor extends Staff {
-    @Embedded
+    @ElementCollection
     List<Character> characters;
+
+    VoiceActor() {}
 
     VoiceActor(Staff staff) {
         this.name = staff.name;

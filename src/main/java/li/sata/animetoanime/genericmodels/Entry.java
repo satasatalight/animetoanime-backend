@@ -4,9 +4,16 @@ import jakarta.persistence.MappedSuperclass;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @MappedSuperclass
 public abstract class Entry {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public int dataBaseId; // auto-generated unique id for database purposes, not related to id from Jaikan
+
     public String name;
     public String imageUrl;
 

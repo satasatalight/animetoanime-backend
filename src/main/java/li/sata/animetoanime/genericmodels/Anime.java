@@ -6,11 +6,13 @@ import java.util.List;
 
 import li.sata.animetoanime.jaikanmodels.JaikanAnimePosition;
 import li.sata.animetoanime.jaikanmodels.JaikanVoicePosition;
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
 
-@Embeddable
+@Entity
 public class Anime extends Entry {
-    public List<String> role;
+    @ElementCollection
+    public List<String> role = new ArrayList<>();
 
     public Anime() {}
 

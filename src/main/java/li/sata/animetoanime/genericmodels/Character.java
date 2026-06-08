@@ -7,6 +7,8 @@ public class Character {
     public String name;
     public String imageUrl;
 
+    public Character() {}
+
     public Character(String name, String imageUrl) {
         this.name = name;
         this.imageUrl = imageUrl;

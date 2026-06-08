@@ -15,6 +15,7 @@ import li.sata.animetoanime.genericmodels.Staff;
 
 @Service
 public class AnimeToAnimeService {
+    AnimeRepository animeRepo;
     AnimeService animeService;
 
     public AnimeToAnimeService(AnimeService repo) {
@@ -26,7 +27,7 @@ public class AnimeToAnimeService {
 
         // calculate shortest path 
         
-        // store in upstash
+        // store in database
     }
 
     public List<Entry> findShortestPath(Anime anime1, Anime anime2){
@@ -109,7 +110,7 @@ public class AnimeToAnimeService {
 
                 // if repo returned an error (null value), 
                 if(staffAnimes == null){
-                    // if we're still going thru the queue for the first time,
+                    // if we're going thru the queue for the first time,
                     // put staff to the back of the queue to try again later
                     if(i < queueLength)
                         staffQueue.add(curStaff);
@@ -126,7 +127,7 @@ public class AnimeToAnimeService {
                 }
 
                 // otherwise, 
-                // add all anime to the queue to get explored next
+                // add all anime to the queue to explore next
                 for(Anime staffAnime : staffAnimes){
                     // skip already explored anime
                     if(animeParentMap.containsKey(staffAnime.id))
