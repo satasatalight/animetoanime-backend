@@ -4,6 +4,7 @@ import li.sata.animetoanime.genericmodels.Anime;
 import li.sata.animetoanime.genericmodels.Entry;
 import li.sata.animetoanime.genericmodels.Staff;
 import li.sata.animetoanime.jaikanmodels.*;
+import li.sata.animetoanime.repomodels.AnimeList;
 import li.sata.animetoanime.repomodels.DailyData;
 import li.sata.animetoanime.repomodels.StaffList;
 
@@ -172,12 +173,16 @@ class AnimeToAnimeServiceTests {
 class RepoTests {
 	Anime anime1 = new Anime();
 	Anime anime2 = new Anime();
+	Staff staff = new Staff();
 
 	RepoTests(){
 		anime1.id = 11809;
 		anime2.id = 387;
 		anime1.name = "gdgd fairies";
 		anime2.name = "Haibane Renmei";
+
+		staff.name = "hideaki anno";
+		staff.id = 5111;
 	}
 	
 	@Autowired
@@ -187,10 +192,13 @@ class RepoTests {
 	AnimeRepository animeRepo;
 
 	@Autowired
+	StaffRepository staffRepo;
+
+	@Autowired
 	DailyDataRepository dailyRepo;
 
 	@Test
-	void saveAndGetStaffListTest(){
+	void saveAndGetAnimeListTest(){
 		List<Staff> stafflist = service.getAnimeStaff(anime1.id);
 		StaffList staffObject = new StaffList(anime1, stafflist);
 
@@ -225,6 +233,42 @@ class RepoTests {
 		}
 
 		animeRepo.deleteById(anime1.id);
+	}
+
+	@Test
+	void saveAndGetStaffListTest(){
+		List<Anime> animeList = service.getStaffAnime(staff.id);
+		AnimeList animeObject = new AnimeList(staff, animeList);
+
+		staffRepo.deleteById(staff.id);
+		
+		AnimeList fromRepo = staffRepo.findById(staff.id).orElse(null);
+
+		if(fromRepo == null){
+			staffRepo.save(animeObject);
+			fromRepo = staffRepo.findById(staff.id).orElse(null);
+		}
+
+		assertFalse(fromRepo == null);
+		assertEquals(animeObject.id, fromRepo.id);
+
+		System.out.println("\nFrom Repo:");
+		for(Anime a : fromRepo.animeList){
+			System.out.println(a.name);
+			System.out.println("\t" + a.id);
+			System.out.println("\t" + a.imageUrl);
+			System.out.println();
+		}
+
+		System.out.println("\nFrom Staff Object:");
+		for(Anime a : animeObject.animeList){
+			System.out.println(a.name);
+			System.out.println("\t" + a.id);
+			System.out.println("\t" + a.imageUrl);
+			System.out.println();
+		}
+
+		staffRepo.deleteById(staff.id);
 	}
 
 	@Test

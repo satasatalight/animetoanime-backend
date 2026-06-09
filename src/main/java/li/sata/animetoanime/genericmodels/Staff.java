@@ -15,7 +15,7 @@ public class Staff extends Entry {
     @ElementCollection
     public List<String> positions = new ArrayList<>();
 
-    Staff() {}
+    public Staff() {}
 
     public Staff(JaikanStaff jaikanStaff) {
         this.name = jaikanStaff.person.name;
