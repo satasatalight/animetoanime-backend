@@ -186,11 +186,11 @@ class RepoTests {
 	@Autowired
 	AnimeRepository animeRepo;
 
-	//@Autowired
-	//DailyDataRepository dailyRepo;
+	@Autowired
+	DailyDataRepository dailyRepo;
 
 	@Test
-	void saveAndGetTest(){
+	void saveAndGetStaffListTest(){
 		List<Staff> stafflist = service.getAnimeStaff(anime1.id);
 		StaffList staffObject = new StaffList(anime1, stafflist);
 
@@ -224,20 +224,35 @@ class RepoTests {
 			System.out.println();
 		}
 
-		//animeRepo.deleteById(anime1.id);
+		animeRepo.deleteById(anime1.id);
 	}
 
-	//@Test
-	//void saveDailyDataTest(){
-	//	List<Entry> connection = new ArrayList<>();
-	//	connection = List.of(anime1, anime2);
+	@Test
+	void saveDailyDataTest(){
+		DailyData exampleData = new DailyData();
 
-	//	dailyRepo.save(new DailyData(anime1, anime2, connection));
-	//	DailyData fromRepo = dailyRepo.findById(LocalDate.of(2026, 5, 27)).orElse(null);
+		List<Entry> connection = new ArrayList<>();
+		connection = List.of(anime1, anime2);
 
-	//	assertFalse(fromRepo == null);
+		exampleData.name = "example daily data set";
+		exampleData.anime1 = anime1;
+		exampleData.anime2 = anime2;
+		exampleData.shortestPath = connection;
 
-	//	System.out.println(fromRepo.anime1.name);
-	//	System.out.println(fromRepo.anime2.name);
-	//}
+		dailyRepo.save(exampleData);
+		DailyData fromRepo = dailyRepo.findById(LocalDate.of(2026, 6, 10)).orElse(null);
+
+		assertFalse(fromRepo == null);
+
+		System.out.println("from repo: ");
+		System.out.println(fromRepo);
+		System.out.println(fromRepo.name);
+		System.out.println(fromRepo.anime1.name);
+		System.out.println(fromRepo.anime2.name);
+		System.out.print("Path: ");
+		for(Entry a : fromRepo.shortestPath)
+			System.out.print("-> " + a.name);
+
+		dailyRepo.deleteById(LocalDate.of(2026, 6, 10));
+	}
 }
