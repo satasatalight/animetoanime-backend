@@ -20,6 +20,11 @@ public class AnimeList {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     public List<Anime> animeList = new ArrayList<>();
 
+    public AnimeList(int a, List<Anime> l){
+        this.id = a;
+        this.animeList = l;
+    }
+
     public AnimeList(Staff a, List<Anime> l){
         this.id = a.id;
         this.animeList = l;

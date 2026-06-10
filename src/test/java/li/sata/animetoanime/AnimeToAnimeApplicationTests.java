@@ -145,13 +145,14 @@ class AnimeToAnimeServiceTests {
 	Anime anime2 = new Anime();
 
 	AnimeToAnimeServiceTests(){
-		anime1.id = 11809;
-		anime2.id = 387;
-		anime1.name = "gdgd fairies";
-		anime2.name = "haibane renmei";
+		anime1.id = 387;
+		anime2.id = 11809;
+		anime1.name = "Haibane Renmei";
+		anime2.name = "gdgd Fairies";
 	}
 
-	AnimeToAnimeService service = new AnimeToAnimeService(new JaikanService());
+	@Autowired
+	AnimeToAnimeService service;
 
 	@Test
 	void calculateShortestPathTest() {

@@ -1,5 +1,6 @@
 package li.sata.animetoanime;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,14 +13,22 @@ import org.springframework.stereotype.Service;
 import li.sata.animetoanime.genericmodels.Anime;
 import li.sata.animetoanime.genericmodels.Entry;
 import li.sata.animetoanime.genericmodels.Staff;
+import li.sata.animetoanime.repomodels.AnimeList;
+import li.sata.animetoanime.repomodels.DailyData;
+import li.sata.animetoanime.repomodels.StaffList;
 
 @Service
 public class AnimeToAnimeService {
-    AnimeRepository animeRepo;
     AnimeService animeService;
+    AnimeRepository animeRepo;
+    StaffRepository staffRepo;
+    DailyDataRepository dailyRepo;
 
-    public AnimeToAnimeService(AnimeService repo) {
-        this.animeService = repo;
+    public AnimeToAnimeService(AnimeService service, AnimeRepository a, StaffRepository s, DailyDataRepository d) {
+      this.animeService = service;
+      this.animeRepo = a;
+      this.staffRepo = s;
+      this.dailyRepo = d;
     }
 
     public void generateDailyData(){
@@ -32,8 +41,8 @@ public class AnimeToAnimeService {
 
     public List<Entry> findShortestPath(Anime anime1, Anime anime2){
         // get staff lists for both anime
-		List<Staff> staffList1 = animeService.getAnimeStaff(anime1.id);
-		List<Staff> staffList2 = animeService.getAnimeStaff(anime2.id);
+		List<Staff> staffList1 = getAnimeStaff(anime1.id);
+		List<Staff> staffList2 = getAnimeStaff(anime2.id);
 
         // if both are unreachable, give up on search
         if(staffList1 == null && staffList2 == null)
@@ -160,20 +169,42 @@ public class AnimeToAnimeService {
         return path;
     }
 
-    public List<Anime> getDailyData(){
-        return null;
+    public DailyData getDailyData(LocalDate date){
+        return dailyRepo.findById(date).orElse(null);
     }
 
     public List<Staff> getAnimeStaff(int id){
-        return animeService.getAnimeStaff(id);
+        List<Staff> res = null;
+        StaffList fromRepo = animeRepo.findById(id).orElse(null);
+
+        if(fromRepo != null)
+            res = fromRepo.staffList;
+        
+        else {
+            res = animeService.getAnimeStaff(id);
+
+            if(res != null)
+                animeRepo.save(new StaffList(id, res));
+        }
+
+        return res;
     }
 
     public List<Anime> getStaffAnime(int id){
-        return animeService.getStaffAnime(id);
-    }
+        List<Anime> res = null;
+        AnimeList fromRepo = staffRepo.findById(id).orElse(null);
 
-    public int getShortestPath(){
-        return 0;
+        if(fromRepo != null)
+            res = fromRepo.animeList;
+
+        else{
+            res = animeService.getStaffAnime(id);
+
+            if(res != null)
+                staffRepo.save(new AnimeList(id, res));
+        }
+
+        return res;
     }
 
     public void addToAverageScore(int score){

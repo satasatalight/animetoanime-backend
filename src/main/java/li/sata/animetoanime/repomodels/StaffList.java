@@ -20,6 +20,11 @@ public class StaffList {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     public List<Staff> staffList = new ArrayList<>();
 
+    public StaffList(int a, List<Staff> l){
+        this.id = a;
+        this.staffList = l;
+    }
+
     public StaffList(Anime a, List<Staff> l){
         this.id = a.id;
         this.staffList = l;
