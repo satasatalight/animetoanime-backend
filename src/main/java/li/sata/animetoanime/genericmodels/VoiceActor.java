@@ -10,7 +10,7 @@ import jakarta.persistence.Entity;
 @Entity
 public class VoiceActor extends Staff {
     @ElementCollection
-    List<Character> characters;
+    public List<Character> characters;
 
     VoiceActor() {}
 

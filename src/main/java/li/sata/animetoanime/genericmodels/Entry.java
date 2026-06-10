@@ -1,5 +1,7 @@
 package li.sata.animetoanime.genericmodels;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,6 +16,7 @@ import jakarta.persistence.InheritanceType;
 public abstract class Entry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     public int dataBaseId; // auto-generated unique id for database purposes, not related to id from Jaikan
 
     public String name;
