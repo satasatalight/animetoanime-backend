@@ -12,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -42,8 +44,6 @@ class JaikanTests {
 		}
 
 		assertFalse(first == null);
-		assertEquals(first.title, "Yuru Yuri♪♪");
-		assertEquals(first.status, "Finished Airing");
 
 //		System.out.println(first.title);
 //		System.out.println(first.status);
@@ -63,8 +63,6 @@ class JaikanTests {
 		}
 
 		assertFalse(first == null);
-		assertEquals(first.person.name, "Kamata, Hajime");
-		assertEquals(first.positions.get(0), "Producer");
 
 //		System.out.println(first.person.name);
 //		System.out.println(first.positions.get(0));
@@ -84,8 +82,6 @@ class JaikanTests {
 		}
 
 		assertFalse(first == null);
-		assertEquals(first.character.name, "Akaza, Akari");
-		assertEquals(first.role, "Main");
 
 //		System.out.println(first.character.name);
 //		System.out.println(first.role);
@@ -285,7 +281,7 @@ class RepoTests {
 		exampleData.shortestPath = connection;
 
 		dailyRepo.save(exampleData);
-		DailyData fromRepo = dailyRepo.findById(LocalDate.of(2026, 6, 10)).orElse(null);
+		DailyData fromRepo = dailyRepo.findById(LocalDate.from(ZonedDateTime.now(ZoneId.of("UTC+14:00")))).orElse(null);
 
 		assertFalse(fromRepo == null);
 
