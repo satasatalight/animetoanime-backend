@@ -173,10 +173,12 @@ class RepoTests {
 	Staff staff = new Staff();
 
 	RepoTests(){
-		anime1.id = 11809;
-		anime2.id = 387;
-		anime1.name = "gdgd fairies";
-		anime2.name = "Haibane Renmei";
+		anime1.id = 9874;
+		anime2.id = 60326;
+		anime1.name = "Touhou Niji Sousaku Doujin Anime: Musou Kakyou";
+		anime2.name = "Watashi ga Koibito ni Nareru Wake Nai jan, Muri Muri! (※Muri ja Nakatta!?)";
+		anime1.imageUrl = "https://cdn.myanimelist.net/images/anime/3/27302l.jpg";
+		anime2.imageUrl = "https://cdn.myanimelist.net/images/anime/1887/150496l.jpg";
 
 		staff.name = "hideaki anno";
 		staff.id = 5111;
@@ -294,6 +296,7 @@ class RepoTests {
 		for(Entry a : fromRepo.shortestPath)
 			System.out.print("-> " + a.name);
 
-		dailyRepo.deleteById(LocalDate.of(2026, 6, 10));
+		System.out.println("saved at: " + LocalDate.from(ZonedDateTime.now(ZoneId.of("UTC+14:00"))));
+		//dailyRepo.deleteById(LocalDate.from(ZonedDateTime.now(ZoneId.of("UTC+14:00"))));
 	}
 }
