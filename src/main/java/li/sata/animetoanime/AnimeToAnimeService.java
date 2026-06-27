@@ -32,11 +32,31 @@ public class AnimeToAnimeService {
     }
 
     public void generateDailyData(){
+        System.out.println(dailyRepo.findById(DailyData.currentWorkingDate()));
+
         // get two random anime
+        Anime anime1 = animeService.getRandomAnime();
+        Anime anime2 = animeService.getRandomAnime();
+
+        System.out.println("got " + anime1.name + " and " + anime2.name);
 
         // calculate shortest path 
+        List<Entry> shortestPath = this.findShortestPath(anime1, anime2);
+
+        for(Entry e : shortestPath)
+            System.out.println(e.name + " -> ");
         
+        // create dailydata object
+        DailyData nextDailyData = new DailyData(anime1, anime2, shortestPath);
+
         // store in database
+        dailyRepo.save(nextDailyData);
+
+        // deletion process:
+        // delete two day old dailydata
+        // clear two day old cache in anime and staff repos
+
+        System.out.println(dailyRepo.findById(DailyData.currentWorkingDate()));
     }
 
     public List<Entry> findShortestPath(Anime anime1, Anime anime2){
@@ -85,7 +105,6 @@ public class AnimeToAnimeService {
             Anime currAnime = animeQueue.poll();
             List<Staff> animeStaff = getAnimeStaff(currAnime.id);
 
-            System.out.println("Visting Anime: " + currAnime.name);
 
             // jaikan returned a 500 http error:
             // add anime to the back of the queue to try again later

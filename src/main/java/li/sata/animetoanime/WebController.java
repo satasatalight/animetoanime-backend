@@ -33,4 +33,11 @@ public class WebController {
     public DailyData getDailyGame(@RequestParam LocalDate date) {
         return service.getDailyData(date);
     }
+
+    @GetMapping("/cron")
+    public void generateNewDailyGame(@RequestParam String authorization) {
+        if(authorization.equals("secret"))
+            service.generateDailyData();
+    }
+    
 }

@@ -31,13 +31,17 @@ public class DailyData {
 
     // set to current time from UTC+14 (farthest time zone in the future)
     public DailyData (){
-        date = LocalDate.from(ZonedDateTime.now(ZoneId.of("UTC+14:00")));
+        date = currentWorkingDate();
     }
 
     public DailyData(Anime a1, Anime a2, List<Entry> path){
         anime1 = a1;
         anime2 = a2;
         shortestPath = path;
-        date = LocalDate.from(ZonedDateTime.now(ZoneId.of("UTC+14:00")));
+        date = currentWorkingDate();
+    }
+
+    public static LocalDate currentWorkingDate(){
+        return LocalDate.from(ZonedDateTime.now(ZoneId.of("UTC+14:00"))).plusDays(1);
     }
 }
