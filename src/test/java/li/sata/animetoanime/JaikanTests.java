@@ -9,16 +9,18 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import pw.mihou.jaikan.Jaikan;
-import pw.mihou.jaikan.components.PaginatedResponse;
 import pw.mihou.jaikan.endpoints.Endpoints;
 //import pw.mihou.jaikan.models.Anime;
 
 @SpringBootTest
 class JaikanTests {
-	JaikanService service = new JaikanService();
+	@Autowired
+	JaikanService service;
+
 	int animeid = 12403;
 	int staffid = 203;
 
@@ -80,61 +82,6 @@ class JaikanTests {
 	}
 
 	@Test
-	void randomEndpointTest(){
-		pw.mihou.jaikan.models.Anime rand = null;
-
-		try{
-			rand = Jaikan.object(service.randomEndpoint, pw.mihou.jaikan.models.Anime.class).get();
-		}
-
-		catch(Exception e) {
-			e.printStackTrace(System.err);
-		}
-
-		assertFalse(rand == null);
-
-//		System.out.println(rand.title);
-	}
-
-	@Test
-	void topAnimeEndpointTest(){
-		PaginatedResponse<pw.mihou.jaikan.models.Anime> top = null;
-
-		try{
-			top = Jaikan.paginated(service.topEndpoint, pw.mihou.jaikan.models.Anime.class).get();
-		}
-
-		catch(Exception e) {
-			e.printStackTrace(System.err);
-		}
-
-		System.out.println(top);
-		assertFalse(top == null);
-
-		//System.out.println(top.links.next);
-		//System.out.println(top.links.first);
-		//System.out.println(top.links.prev);
-		//System.out.println(top.links.last);
-		//System.out.println(top.meta.to);
-		//System.out.println(top.meta.perPage);
-		//System.out.println(top.meta.path);
-		//System.out.println(top.meta.total);
-		//System.out.println(top.meta.currentPage);
-		//System.out.println(top.pagination.hasNextPage);
-		//System.out.println(top.pagination.lastVisiblePage);
-
-		//System.out.println("total: " + top.data.size());
-		//for(pw.mihou.jaikan.models.Anime a : top.data){
-		//	System.out.println(a.title);
-		//}
-
-		//System.out.println("total: " + top.size());
-		//for(pw.mihou.jaikan.models.Anime a : top){
-		//	System.out.println(a.title);
-		//}
-	}
-
-	@Test
 	void jaikanStaffTest() {
 		List<Staff> staff = service.getAnimeStaff(animeid);
 		assertFalse(staff == null);
@@ -162,5 +109,16 @@ class JaikanTests {
 			System.out.println("\t" + a.id);
 			System.out.println();
 		}
+	}
+
+	@Test
+	void jaikanRandomAnimeTest() {
+		Anime anime = service.getRandomAnime();
+
+		System.out.println(anime.name);
+		System.out.println(anime.id);
+		System.out.println(anime.imageUrl);
+
+		assertFalse(anime == null);
 	}
 }

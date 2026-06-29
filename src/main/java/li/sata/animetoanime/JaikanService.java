@@ -4,7 +4,10 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import li.sata.animetoanime.genericmodels.Staff;
@@ -24,28 +27,45 @@ public class JaikanService implements AnimeService {
     Endpoint animeCharacterEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/anime/{}/characters");
     Endpoint staffAnimeEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/people/{}/anime");
     Endpoint staffVoicesEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/people/{}/voices");
-    Endpoint randomEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/random/anime?sfw");
+
+    // get list of top 1000s anime on MAL (as of June 2026)
+    ClassPathResource topList = new ClassPathResource("top.txt");
+    ArrayList<String> topAnimeIDs = new ArrayList<>();
 
     JaikanService() {
+        // fill topAnimeID list object
+        try(Scanner scan = new Scanner(topList.getFile())){
+            while(scan.hasNextLine()) {
+                String id = scan.nextLine();
+                topAnimeIDs.add(id);
+            }
+        }
+
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+
         Jaikan.setConfiguration(builder -> builder
             .setRatelimit(Duration.ofMillis(800))
             .build());
     }
 
+    // pull random anime from top 1000 list
     public Anime getRandomAnime() {
-        Anime anime = null;
+        Anime rand = null;
+
+        Random r = new Random();
+        String randomId = topAnimeIDs.get(r.nextInt(topAnimeIDs.size()));
 
         try {
-            pw.mihou.jaikan.models.Anime jaikanAnime = Jaikan.object(randomEndpoint, pw.mihou.jaikan.models.Anime.class).get();
-            anime = new Anime(jaikanAnime);
-        } 
+            rand = new Anime(Jaikan.object(Endpoints.OBJECT, pw.mihou.jaikan.models.Anime.class, "anime", randomId).get());
+        }
 
         catch (Exception e) {
             e.printStackTrace();
-            return null;
         }
 
-        return anime;
+        return rand;
     }
 
     public List<Staff> getAnimeStaff(int malid) {
