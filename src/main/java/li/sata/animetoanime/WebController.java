@@ -3,6 +3,7 @@ package li.sata.animetoanime;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,16 +20,19 @@ public class WebController {
         service = s;
     }
 
+    @CrossOrigin
     @GetMapping("/getAnimeStaff")
     public List<Staff> getAnimeStaff(@RequestParam int id) {
         return service.getAnimeStaff(id);
     }
     
+    @CrossOrigin
     @GetMapping("/getStaffAnime")
     public List<Anime> getStaffAnime(@RequestParam int id) {
         return service.getStaffAnime(id);
     }
     
+    @CrossOrigin
     @GetMapping("/getDailyGame")
     public DailyData getDailyGame(@RequestParam LocalDate date) {
         return service.getDailyData(date);
