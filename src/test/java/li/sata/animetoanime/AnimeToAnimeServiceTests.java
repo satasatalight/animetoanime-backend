@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import li.sata.animetoanime.genericmodels.Anime;
 import li.sata.animetoanime.genericmodels.Entry;
+import li.sata.animetoanime.repomodels.DailyData;
 
 @SpringBootTest
 class AnimeToAnimeServiceTests {
@@ -26,6 +27,9 @@ class AnimeToAnimeServiceTests {
 	@Autowired
 	AnimeToAnimeService service;
 
+	@Autowired
+	DailyDataRepository repo;
+
 	@Test
 	void calculateShortestPathTest() {
 		List<Entry> path = service.findShortestPath(anime1, anime2);
@@ -39,5 +43,16 @@ class AnimeToAnimeServiceTests {
 		}
 		System.out.println();
 		//System.out.println(JaikanRepository.skippedIds.size() + " cut entries: " + JaikanRepository.skippedIds);
+	}
+
+	@Test
+	void generateDailyDataTest() {
+		service.generateDailyData();
+
+		DailyData generated = repo.findById(DailyData.currentWorkingDate()).orElse(null);
+
+		assertFalse(generated == null);
+
+		System.out.println(generated.anime1.name + " to " + generated.anime2.name + " was generated");
 	}
 }

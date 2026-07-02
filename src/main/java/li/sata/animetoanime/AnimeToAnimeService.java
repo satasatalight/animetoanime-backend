@@ -55,8 +55,6 @@ public class AnimeToAnimeService {
         // deletion process:
         // delete two day old dailydata
         // clear two day old cache in anime and staff repos
-
-        System.out.println(dailyRepo.findById(DailyData.currentWorkingDate()));
     }
 
     public List<Entry> findShortestPath(Anime anime1, Anime anime2){
@@ -102,14 +100,16 @@ public class AnimeToAnimeService {
         animeQueue.add(start);
 
         while(!animeQueue.isEmpty()){
-            Anime currAnime = animeQueue.poll();
-            List<Staff> animeStaff = getAnimeStaff(currAnime.id);
+            Anime curAnime = animeQueue.poll();
 
+            System.out.println("Visting Anime: " + curAnime.name);
+
+            List<Staff> animeStaff = getAnimeStaff(curAnime.id);
 
             // jaikan returned a 500 http error:
             // add anime to the back of the queue to try again later
             if(animeStaff == null){
-                animeQueue.add(currAnime);
+                animeQueue.add(curAnime);
                 continue;
             }
 
@@ -122,7 +122,7 @@ public class AnimeToAnimeService {
                     continue;
                 
                 // add curAnime as parent and place in queue
-                staffParentMap.put(staffMember.id, currAnime);
+                staffParentMap.put(staffMember.id, curAnime);
                 staffQueue.add(staffMember);
             }
 
