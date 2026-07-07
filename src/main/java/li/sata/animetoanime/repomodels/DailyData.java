@@ -34,11 +34,22 @@ public class DailyData {
         date = currentWorkingDate();
     }
 
+    public DailyData (LocalDate d){
+        date = d;
+    }
+
     public DailyData(Anime a1, Anime a2, List<Entry> path){
         anime1 = a1;
         anime2 = a2;
         shortestPath = path;
         date = currentWorkingDate();
+    }
+
+    public DailyData(Anime a1, Anime a2, List<Entry> path, LocalDate d){
+        anime1 = a1;
+        anime2 = a2;
+        shortestPath = path;
+        date = d;
     }
 
     public static LocalDate currentWorkingDate(){

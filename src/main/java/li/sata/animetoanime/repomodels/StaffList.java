@@ -1,7 +1,10 @@
 package li.sata.animetoanime.repomodels;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -15,6 +18,9 @@ import li.sata.animetoanime.genericmodels.Staff;
 public class StaffList {
     @Id
     public int id; // unique id corresponding to anime
+
+    @CreationTimestamp
+    public LocalDate creation;
 
     // list of staff involved on anime
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

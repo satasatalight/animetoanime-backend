@@ -32,7 +32,14 @@ public class AnimeToAnimeService {
     }
 
     public void generateDailyData(){
-        System.out.println(dailyRepo.findById(DailyData.currentWorkingDate()));
+        System.out.println("Generating for " + DailyData.currentWorkingDate());
+
+        // delete two day old dailydata
+        dailyRepo.deleteById(DailyData.currentWorkingDate().minusDays(2));
+        
+        // clear two day old cache in anime and staff repos
+        animeRepo.deleteByCreationLessThan(LocalDate.now().minusDays(1));
+        staffRepo.deleteByCreationLessThan(LocalDate.now().minusDays(1));
 
         // get two random anime
         Anime anime1 = animeService.getRandomAnime();
@@ -51,10 +58,6 @@ public class AnimeToAnimeService {
 
         // store in database
         dailyRepo.save(nextDailyData);
-
-        // deletion process:
-        // delete two day old dailydata
-        // clear two day old cache in anime and staff repos
     }
 
     public List<Entry> findShortestPath(Anime anime1, Anime anime2){
