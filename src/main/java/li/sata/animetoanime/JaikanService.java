@@ -23,10 +23,16 @@ import pw.mihou.jaikan.endpoints.Endpoints;
 
 @Service
 public class JaikanService implements AnimeService {
-    Endpoint animeStaffEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/anime/{}/staff");
-    Endpoint animeCharacterEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/anime/{}/characters");
-    Endpoint staffAnimeEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/people/{}/anime");
-    Endpoint staffVoicesEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/people/{}/voices");
+    //Endpoint animeStaffEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/anime/{}/staff");
+    //Endpoint animeCharacterEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/anime/{}/characters");
+    //Endpoint staffAnimeEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/people/{}/anime");
+    //Endpoint staffVoicesEndpoint = Endpoints.createEndpoint("https://api.jikan.moe/v4/people/{}/voices");
+
+    Endpoint animeStaffEndpoint = Endpoints.createEndpoint("https://api.tenrai.org/v1/anime/{}/staff");
+    Endpoint animeCharacterEndpoint = Endpoints.createEndpoint("https://api.tenrai.org/v1/anime/{}/characters");
+    Endpoint staffAnimeEndpoint = Endpoints.createEndpoint("https://api.tenrai.org/v1/people/{}/anime");
+    Endpoint staffVoicesEndpoint = Endpoints.createEndpoint("https://api.tenrai.org/v1/people/{}/voices");
+    Endpoint objectEndpoint = Endpoints.createEndpoint("https://api.tenrai.org/v1/{}/{}");
 
     // get list of top 1000s anime on MAL (as of June 2026)
     ClassPathResource topList = new ClassPathResource("top.txt");
@@ -58,7 +64,7 @@ public class JaikanService implements AnimeService {
         String randomId = topAnimeIDs.get(r.nextInt(topAnimeIDs.size()));
 
         try {
-            rand = new Anime(Jaikan.object(Endpoints.OBJECT, pw.mihou.jaikan.models.Anime.class, "anime", randomId).get());
+            rand = new Anime(Jaikan.object(objectEndpoint, pw.mihou.jaikan.models.Anime.class, "anime", randomId).get());
         }
 
         catch (Exception e) {
