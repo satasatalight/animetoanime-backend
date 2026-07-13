@@ -7,12 +7,14 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import li.sata.animetoanime.genericmodels.Anime;
 import li.sata.animetoanime.genericmodels.Entry;
 import li.sata.animetoanime.repomodels.DailyData;
 
 @SpringBootTest
+@ActiveProfiles("dev")
 class AnimeToAnimeServiceTests {
 	Anime anime1 = new Anime();
 	Anime anime2 = new Anime();

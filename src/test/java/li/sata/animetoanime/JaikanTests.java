@@ -11,12 +11,14 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import pw.mihou.jaikan.Jaikan;
 import pw.mihou.jaikan.endpoints.Endpoints;
 //import pw.mihou.jaikan.models.Anime;
 
 @SpringBootTest
+@ActiveProfiles("dev")
 class JaikanTests {
 	@Autowired
 	JaikanService service;

@@ -40,7 +40,7 @@ public class JaikanService implements AnimeService {
 
     JaikanService() {
         // fill topAnimeID list object
-        try(Scanner scan = new Scanner(topList.getFile())){
+        try(Scanner scan = new Scanner(topList.getInputStream())){
             while(scan.hasNextLine()) {
                 String id = scan.nextLine();
                 topAnimeIDs.add(id);

@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 //import org.springframework.data.auditing.AuditingHandler;
 //import org.springframework.data.auditing.DateTimeProvider;
 //import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.ActiveProfiles;
 
 import li.sata.animetoanime.genericmodels.Anime;
 import li.sata.animetoanime.genericmodels.Entry;
@@ -26,6 +27,7 @@ import li.sata.animetoanime.repomodels.DailyData;
 import li.sata.animetoanime.repomodels.StaffList;
 
 @SpringBootTest
+@ActiveProfiles("dev")
 class RepoTests {
 	Anime anime1 = new Anime();
 	Anime anime2 = new Anime();
