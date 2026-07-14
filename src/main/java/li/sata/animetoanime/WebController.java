@@ -15,6 +15,8 @@ import li.sata.animetoanime.repomodels.DailyData;
 @RestController
 public class WebController {
     AnimeToAnimeService service;
+    
+    private String cronPassword = System.getenv("A2A_CRON_PASSWORD");
 
     WebController(AnimeToAnimeService s){
         service = s;
@@ -40,7 +42,7 @@ public class WebController {
 
     @GetMapping("/cron")
     public void generateNewDailyGame(@RequestParam String authorization) {
-        if(authorization.equals("secret"))
+        if(authorization.equals(cronPassword))
             service.generateDailyData();
     }
     
