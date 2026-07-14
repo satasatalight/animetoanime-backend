@@ -2,7 +2,10 @@ package li.sata.animetoanime;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,9 +44,12 @@ public class WebController {
     }
 
     @GetMapping("/cron")
-    public void generateNewDailyGame(@RequestParam String authorization) {
-        if(authorization.equals(cronPassword))
-            service.generateDailyData();
+    public ResponseEntity<?> generateNewDailyGame(@RequestParam String authorization) {
+        if(authorization.equals(cronPassword)) {
+            CompletableFuture.runAsync(() -> service.generateDailyData());
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     
 }
