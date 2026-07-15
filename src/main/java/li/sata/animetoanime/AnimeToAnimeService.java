@@ -32,8 +32,16 @@ public class AnimeToAnimeService {
       this.dailyRepo = d;
     }
 
-    public void generateDailyData(){
-        System.out.println("Generating for " + DailyData.currentWorkingDate());
+    public void generateDailyData() {
+        generateDailyData(new DailyData());
+    }
+
+    public void generateDailyData(LocalDate d) {
+        generateDailyData(new DailyData(d));
+    }
+
+    public void generateDailyData(DailyData nextDailyData){
+        System.out.println("Generating for " + nextDailyData.date);
 
         // delete two day old dailydata
         dailyRepo.deleteById(DailyData.currentWorkingDate().minusDays(2));
@@ -54,8 +62,10 @@ public class AnimeToAnimeService {
         for(Entry e : shortestPath)
             System.out.println(e.name + " -> ");
         
-        // create dailydata object
-        DailyData nextDailyData = new DailyData(anime1, anime2, shortestPath);
+        // save to dailydata object
+        nextDailyData.anime1 = anime1;
+        nextDailyData.anime2 = anime2;
+        nextDailyData.shortestPath = shortestPath;
 
         // store in database
         dailyRepo.save(nextDailyData);

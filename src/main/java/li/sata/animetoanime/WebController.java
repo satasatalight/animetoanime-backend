@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,14 +43,18 @@ public class WebController {
     public DailyData getDailyGame(@RequestParam LocalDate date) {
         return service.getDailyData(date);
     }
-
+    
     @GetMapping("/cron")
-    public ResponseEntity<?> generateNewDailyGame(@RequestParam String authorization) {
+    public ResponseEntity<?> generateNewDailyGame(
+        @RequestHeader(value="authorization") String authorization, @RequestParam(required = false) LocalDate date) {
         if(authorization.equals(cronPassword)) {
-            CompletableFuture.runAsync(() -> service.generateDailyData());
+            if(date != null)
+                CompletableFuture.runAsync(() -> service.generateDailyData(date));
+            else
+                CompletableFuture.runAsync(() -> service.generateDailyData());
+
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    
 }
