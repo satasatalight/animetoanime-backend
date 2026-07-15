@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.stereotype.Service;
 
@@ -205,8 +206,9 @@ public class AnimeToAnimeService {
         else {
             res = animeService.getAnimeStaff(id);
 
+            final List<Staff> finalRes = res;
             if(res != null)
-                animeRepo.save(new StaffList(id, res));
+                CompletableFuture.runAsync(() -> animeRepo.save(new StaffList(id, finalRes)));
         }
 
         return res;
@@ -222,8 +224,9 @@ public class AnimeToAnimeService {
         else{
             res = animeService.getStaffAnime(id);
 
+            final List<Anime> finalRes = res;
             if(res != null)
-                staffRepo.save(new AnimeList(id, res));
+                CompletableFuture.runAsync(() -> staffRepo.save(new AnimeList(id, finalRes)));
         }
 
         return res;
