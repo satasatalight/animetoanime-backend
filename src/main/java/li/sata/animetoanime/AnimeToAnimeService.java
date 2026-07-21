@@ -44,11 +44,11 @@ public class AnimeToAnimeService {
         System.out.println("Generating for " + nextDailyData.date);
 
         // delete two day old dailydata
-        dailyRepo.deleteById(DailyData.currentWorkingDate().minusDays(2));
+        dailyRepo.deleteByDateLessThan(DailyData.currentWorkingDate().minusDays(2));
         
         // clear two day old cache in anime and staff repos
-        animeRepo.deleteByCreationLessThan(LocalDate.now().minusDays(1));
-        staffRepo.deleteByCreationLessThan(LocalDate.now().minusDays(1));
+        animeRepo.deleteByCreationLessThan(LocalDate.now().minusDays(2));
+        staffRepo.deleteByCreationLessThan(LocalDate.now().minusDays(2));
 
         // get two random anime
         Anime anime1 = animeService.getRandomAnime();
