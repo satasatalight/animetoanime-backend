@@ -73,8 +73,8 @@ public class AnimeToAnimeService {
 
     public List<Entry> findShortestPath(Anime anime1, Anime anime2){
         // get staff lists for both anime
-		List<Staff> staffList1 = getAnimeStaff(anime1.id);
-		List<Staff> staffList2 = getAnimeStaff(anime2.id);
+		List<Staff> staffList1 = getAnimeStaff(anime1.entryId);
+		List<Staff> staffList2 = getAnimeStaff(anime2.entryId);
 
         // if both are unreachable, give up on search
         if(staffList1 == null && staffList2 == null)
@@ -110,7 +110,7 @@ public class AnimeToAnimeService {
         HashMap<Integer, Staff> animeParentMap = new HashMap<>(); 
         HashMap<Integer, Anime> staffParentMap = new HashMap<>();
 
-        animeParentMap.put(start.id, null);
+        animeParentMap.put(start.entryId, null);
         animeQueue.add(start);
 
         while(!animeQueue.isEmpty()){
@@ -118,7 +118,7 @@ public class AnimeToAnimeService {
 
             System.out.println("Visting Anime: " + curAnime.name);
 
-            List<Staff> animeStaff = getAnimeStaff(curAnime.id);
+            List<Staff> animeStaff = getAnimeStaff(curAnime.entryId);
 
             // jaikan returned a 500 http error:
             // add anime to the back of the queue to try again later
@@ -132,11 +132,11 @@ public class AnimeToAnimeService {
             // fill staff queue with current anime's staff list
             for(Staff staffMember : animeStaff){
                 // skip already visited staff
-                if(staffParentMap.containsKey(staffMember.id))
+                if(staffParentMap.containsKey(staffMember.entryId))
                     continue;
                 
                 // add curAnime as parent and place in queue
-                staffParentMap.put(staffMember.id, curAnime);
+                staffParentMap.put(staffMember.entryId, curAnime);
                 staffQueue.add(staffMember);
             }
 
@@ -148,7 +148,7 @@ public class AnimeToAnimeService {
 
                 System.out.println("Visting Staff: " + curStaff.name);
 
-                List<Anime> staffAnimes = getStaffAnime(curStaff.id);
+                List<Anime> staffAnimes = getStaffAnime(curStaff.entryId);
 
                 // if repo returned an error (null value), 
                 if(staffAnimes == null){
@@ -164,7 +164,7 @@ public class AnimeToAnimeService {
                 // if end anime is in staff list, 
                 // connect and return path
                 if(staffAnimes.contains(end)){
-                    animeParentMap.put(end.id, curStaff);
+                    animeParentMap.put(end.entryId, curStaff);
                     return reconstructPath(animeParentMap, staffParentMap, end);
                 }
 
@@ -172,11 +172,11 @@ public class AnimeToAnimeService {
                 // add all anime to the queue to explore next
                 for(Anime staffAnime : staffAnimes){
                     // skip already explored anime
-                    if(animeParentMap.containsKey(staffAnime.id))
+                    if(animeParentMap.containsKey(staffAnime.entryId))
                         continue;
 
                     // add curstaff as parent and place in queue
-                    animeParentMap.put(staffAnime.id, curStaff);
+                    animeParentMap.put(staffAnime.entryId, curStaff);
                     animeQueue.add(staffAnime);
                 }
             }
@@ -193,10 +193,10 @@ public class AnimeToAnimeService {
             path.add(0, current);
 
             if(current instanceof Anime)
-                current = animeMap.get(current.id);
+                current = animeMap.get(current.entryId);
             
             else
-                current = staffMap.get(current.id);
+                current = staffMap.get(current.entryId);
         }
 
         return path;
