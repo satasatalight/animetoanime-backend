@@ -20,8 +20,8 @@ class AnimeToAnimeServiceTests {
 	Anime anime2 = new Anime();
 
 	AnimeToAnimeServiceTests(){
-		anime1.id = 387;
-		anime2.id = 11809;
+		anime1.entryId = 387;
+		anime2.entryId = 11809;
 		anime1.name = "Haibane Renmei";
 		anime2.name = "gdgd Fairies";
 	}
