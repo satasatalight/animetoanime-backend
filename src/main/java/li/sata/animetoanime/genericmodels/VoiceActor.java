@@ -18,15 +18,17 @@ public class VoiceActor extends Staff {
         this.name = staff.name;
         this.positions = staff.positions;
         this.imageUrl = staff.imageUrl;
-        this.id = staff.id;
+        this.entryId = staff.entryId;
+        this.sourceId = staff.sourceId;
         this.characters = new ArrayList<>();
     }
 
-    VoiceActor(JaikanVoiceActor jaikanVoiceActor) {
+    VoiceActor(JaikanVoiceActor jaikanVoiceActor, int sourceId) {
         this.name = jaikanVoiceActor.person.name;
         this.positions = new ArrayList<>();
         this.imageUrl = jaikanVoiceActor.person.images.firstDefault();
-        this.id = jaikanVoiceActor.person.id;
+        this.entryId = jaikanVoiceActor.person.id;
+        this.sourceId = sourceId;
         this.characters = new ArrayList<>();
     }
 }
