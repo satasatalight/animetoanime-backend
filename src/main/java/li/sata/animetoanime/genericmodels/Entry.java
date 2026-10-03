@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -26,6 +27,7 @@ class EntryCompositeKey implements Serializable {
 @IdClass(EntryCompositeKey.class)
 public abstract class Entry {
     @Id
+    @JsonProperty("id")
     public int entryId;
 
     @Id
