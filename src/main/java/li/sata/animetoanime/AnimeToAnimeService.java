@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 import li.sata.animetoanime.genericmodels.Anime;
 import li.sata.animetoanime.genericmodels.Entry;
 import li.sata.animetoanime.genericmodels.Staff;
-import li.sata.animetoanime.repomodels.AnimeList;
 import li.sata.animetoanime.repomodels.DailyData;
-import li.sata.animetoanime.repomodels.StaffList;
 
 @Service
 public class AnimeToAnimeService {
@@ -47,8 +45,8 @@ public class AnimeToAnimeService {
         dailyRepo.deleteByDateLessThan(DailyData.currentWorkingDate().minusDays(2));
         
         // clear two day old cache in anime and staff repos
-        animeRepo.deleteByCreationLessThan(LocalDate.now().minusDays(2));
-        staffRepo.deleteByCreationLessThan(LocalDate.now().minusDays(2));
+        animeRepo.deleteAllByCreationLessThan(LocalDate.now().minusDays(2));
+        staffRepo.deleteAllByCreationLessThan(LocalDate.now().minusDays(2));
 
         // get two random anime
         Anime anime1 = animeService.getRandomAnime();
@@ -207,36 +205,28 @@ public class AnimeToAnimeService {
     }
 
     public List<Staff> getAnimeStaff(int id){
-        List<Staff> res = null;
-        StaffList fromRepo = animeRepo.findById(id).orElse(null);
+        List<Staff> res = staffRepo.findAllBySourceId(id);
 
-        if(fromRepo != null)
-            res = fromRepo.staffList;
-        
-        else {
+        if (res == null || res.isEmpty()) {
             res = animeService.getAnimeStaff(id);
 
             final List<Staff> finalRes = res;
             if(res != null)
-                CompletableFuture.runAsync(() -> animeRepo.save(new StaffList(id, finalRes)));
+                CompletableFuture.runAsync(() -> staffRepo.saveAll(finalRes));
         }
 
         return res;
     }
 
     public List<Anime> getStaffAnime(int id){
-        List<Anime> res = null;
-        AnimeList fromRepo = staffRepo.findById(id).orElse(null);
+        List<Anime> res = animeRepo.findAllBySourceId(id);
 
-        if(fromRepo != null)
-            res = fromRepo.animeList;
-
-        else{
+        if(res == null || res.isEmpty()) {
             res = animeService.getStaffAnime(id);
 
             final List<Anime> finalRes = res;
             if(res != null)
-                CompletableFuture.runAsync(() -> staffRepo.save(new AnimeList(id, finalRes)));
+                CompletableFuture.runAsync(() -> animeRepo.saveAll(finalRes));
         }
 
         return res;
