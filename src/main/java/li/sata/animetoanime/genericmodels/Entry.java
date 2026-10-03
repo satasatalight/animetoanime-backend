@@ -1,6 +1,9 @@
 package li.sata.animetoanime.genericmodels;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -28,6 +31,10 @@ public abstract class Entry {
     @Id
     @JsonIgnore
     public int sourceId; 
+
+    @CreationTimestamp
+    @JsonIgnore
+    public LocalDate creation;
 
     public String name;
     public String imageUrl;
