@@ -64,7 +64,8 @@ public class JaikanService implements AnimeService {
         String randomId = topAnimeIDs.get(r.nextInt(topAnimeIDs.size()));
 
         try {
-            rand = new Anime(Jaikan.object(objectEndpoint, pw.mihou.jaikan.models.Anime.class, "anime", randomId).get());
+            // randome anime are given source index -1 to differentiate from sourced anime
+            rand = new Anime(Jaikan.object(objectEndpoint, pw.mihou.jaikan.models.Anime.class, "anime", randomId).get(), -1);
         }
 
         catch (Exception e) {
@@ -91,8 +92,8 @@ public class JaikanService implements AnimeService {
         // staff and character actors can overlap
         // use hashmap to avoid duplicates and merge VA's who also have staff positions
         HashMap<Integer, Staff> staffMap = new HashMap<>();
-        Staff.fromJaikanStaff(jaikanStaffList, staffMap);
-        Staff.fromJaikanCharacters(jaikanCharacterList, staffMap);
+        Staff.fromJaikanStaff(jaikanStaffList, staffMap, malid);
+        Staff.fromJaikanCharacters(jaikanCharacterList, staffMap, malid);
 
         return new ArrayList<>(staffMap.values());
     }
@@ -113,8 +114,8 @@ public class JaikanService implements AnimeService {
 
         // combine overlapping voice and staff roles for anime
         HashMap<Integer, Anime> animeMap = new HashMap<>();
-        Anime.fromJaikanAnimePositions(jaikanAnimePositionList, animeMap);
-        Anime.fromJaikanVoicePositions(jaikanVoicePositionList, animeMap);
+        Anime.fromJaikanAnimePositions(jaikanAnimePositionList, animeMap, malid);
+        Anime.fromJaikanVoicePositions(jaikanVoicePositionList, animeMap, malid);
 
         return new ArrayList<>(animeMap.values());
     }
