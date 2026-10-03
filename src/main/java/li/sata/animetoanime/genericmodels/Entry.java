@@ -1,6 +1,5 @@
 package li.sata.animetoanime.genericmodels;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,14 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-
-// entry ids are duplicated across anime and staff
-// using a combined key allows for more intuitive retrival 
-// Ex. "Get anime {entryId} that staff {sourceId} worked on"
-class EntryCompositeKey implements Serializable {
-    public int entryId;
-    public int sourceId;
-}
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
