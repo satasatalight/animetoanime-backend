@@ -13,6 +13,9 @@ public interface AnimeRepository extends CrudRepository<Anime, EntryCompositeKey
     @Transactional
     void deleteAllByCreationLessThan(LocalDate a);
 
+    @Transactional 
+    void deleteAllBySourceId(int id);
+
     @Transactional
     List<Anime> findAllBySourceId(int id);
 }

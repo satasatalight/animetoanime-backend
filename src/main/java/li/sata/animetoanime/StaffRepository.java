@@ -13,6 +13,9 @@ public interface StaffRepository extends CrudRepository<Staff, EntryCompositeKey
     @Transactional
     void deleteAllByCreationLessThan(LocalDate a);
 
+    @Transactional 
+    void deleteAllBySourceId(int id);
+
     @Transactional
     List<Staff> findAllBySourceId(int id);
 }
