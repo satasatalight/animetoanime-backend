@@ -1,9 +1,5 @@
 package li.sata.animetoanime;
 
-import li.sata.animetoanime.genericmodels.Anime;
-import li.sata.animetoanime.genericmodels.Staff;
-import li.sata.animetoanime.jaikanmodels.*;
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.List;
@@ -13,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import li.sata.animetoanime.genericmodels.Anime;
+import li.sata.animetoanime.genericmodels.Staff;
+import li.sata.animetoanime.jaikanmodels.JaikanCharacter;
+import li.sata.animetoanime.jaikanmodels.JaikanStaff;
 import pw.mihou.jaikan.Jaikan;
 import pw.mihou.jaikan.endpoints.Endpoints;
 //import pw.mihou.jaikan.models.Anime;
@@ -108,7 +108,7 @@ class JaikanTests {
 			System.out.println(a.name);
 			System.out.println("\t" + a.role);
 			System.out.println("\t" + a.imageUrl);
-			System.out.println("\t" + a.id);
+			System.out.println("\t" + a.entryId);
 			System.out.println();
 		}
 	}
@@ -118,7 +118,7 @@ class JaikanTests {
 		Anime anime = service.getRandomAnime();
 
 		System.out.println(anime.name);
-		System.out.println(anime.id);
+		System.out.println(anime.entryId);
 		System.out.println(anime.imageUrl);
 
 		assertFalse(anime == null);

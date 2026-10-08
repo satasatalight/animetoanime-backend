@@ -1,34 +1,41 @@
 package li.sata.animetoanime.genericmodels;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.time.LocalDate;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
+import org.hibernate.annotations.CreationTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@IdClass(EntryCompositeKey.class)
 public abstract class Entry {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
+    public int entryId;
+
+    @Id
     @JsonIgnore
-    public int dataBaseId; // auto-generated unique id for database purposes, not related to id from Jaikan
+    public int sourceId; 
+
+    @CreationTimestamp
+    @JsonIgnore
+    public LocalDate creation;
 
     public String name;
     public String imageUrl;
 
-    @AttributeOverride(name = "id", column = @Column(name = "entry_id"))
-    public int id;
-
     Entry() {}
 
     public boolean equals(Entry other) {
-        return this.id == other.id;
+        return this.entryId == other.entryId;
     }
 
     @Override

@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 import li.sata.animetoanime.genericmodels.Anime;
 import li.sata.animetoanime.genericmodels.Entry;
 import li.sata.animetoanime.genericmodels.Staff;
-import li.sata.animetoanime.repomodels.AnimeList;
 import li.sata.animetoanime.repomodels.DailyData;
-import li.sata.animetoanime.repomodels.StaffList;
 
 @Service
 public class AnimeToAnimeService {
@@ -47,8 +45,8 @@ public class AnimeToAnimeService {
         dailyRepo.deleteByDateLessThan(DailyData.currentWorkingDate().minusDays(2));
         
         // clear two day old cache in anime and staff repos
-        animeRepo.deleteByCreationLessThan(LocalDate.now().minusDays(2));
-        staffRepo.deleteByCreationLessThan(LocalDate.now().minusDays(2));
+        animeRepo.deleteAllByCreationLessThan(LocalDate.now().minusDays(2));
+        staffRepo.deleteAllByCreationLessThan(LocalDate.now().minusDays(2));
 
         // get two random anime
         Anime anime1 = animeService.getRandomAnime();
@@ -73,23 +71,28 @@ public class AnimeToAnimeService {
 
     public List<Entry> findShortestPath(Anime anime1, Anime anime2){
         // get staff lists for both anime
-		List<Staff> staffList1 = getAnimeStaff(anime1.id);
-		List<Staff> staffList2 = getAnimeStaff(anime2.id);
+		List<Staff> staffList1 = getAnimeStaff(anime1.entryId);
+		List<Staff> staffList2 = getAnimeStaff(anime2.entryId);
 
         // if both are unreachable, give up on search
-        if(staffList1 == null && staffList2 == null)
+        if(staffList1.isEmpty() && staffList2.isEmpty())
             return null;
 
         // start at reachable anime
-        else if(staffList1 == null)
+        else if(staffList1.isEmpty())
             return searchShortestPath(anime2, anime1);
-        else if(staffList2 == null)
+        else if(staffList2.isEmpty())
             return searchShortestPath(anime1, anime2);
 
         // if both are reachable,
         else{
+            // create deep copy of staff list1
+            ArrayList<Staff> intersection = new ArrayList<>();
+            for (Staff staff : staffList1) {
+                intersection.add(new Staff(staff));
+            }
+
             // check for an overlapping staff member
-            List<Staff> intersection = new ArrayList<>(staffList1);
             intersection.retainAll(staffList2);
 
             // shortcut answer if both staff lists contain a matching member
@@ -110,7 +113,7 @@ public class AnimeToAnimeService {
         HashMap<Integer, Staff> animeParentMap = new HashMap<>(); 
         HashMap<Integer, Anime> staffParentMap = new HashMap<>();
 
-        animeParentMap.put(start.id, null);
+        animeParentMap.put(start.entryId, null);
         animeQueue.add(start);
 
         while(!animeQueue.isEmpty()){
@@ -118,7 +121,7 @@ public class AnimeToAnimeService {
 
             System.out.println("Visting Anime: " + curAnime.name);
 
-            List<Staff> animeStaff = getAnimeStaff(curAnime.id);
+            List<Staff> animeStaff = getAnimeStaff(curAnime.entryId);
 
             // jaikan returned a 500 http error:
             // add anime to the back of the queue to try again later
@@ -132,11 +135,11 @@ public class AnimeToAnimeService {
             // fill staff queue with current anime's staff list
             for(Staff staffMember : animeStaff){
                 // skip already visited staff
-                if(staffParentMap.containsKey(staffMember.id))
+                if(staffParentMap.containsKey(staffMember.entryId))
                     continue;
                 
                 // add curAnime as parent and place in queue
-                staffParentMap.put(staffMember.id, curAnime);
+                staffParentMap.put(staffMember.entryId, curAnime);
                 staffQueue.add(staffMember);
             }
 
@@ -148,7 +151,7 @@ public class AnimeToAnimeService {
 
                 System.out.println("Visting Staff: " + curStaff.name);
 
-                List<Anime> staffAnimes = getStaffAnime(curStaff.id);
+                List<Anime> staffAnimes = getStaffAnime(curStaff.entryId);
 
                 // if repo returned an error (null value), 
                 if(staffAnimes == null){
@@ -164,7 +167,7 @@ public class AnimeToAnimeService {
                 // if end anime is in staff list, 
                 // connect and return path
                 if(staffAnimes.contains(end)){
-                    animeParentMap.put(end.id, curStaff);
+                    animeParentMap.put(end.entryId, curStaff);
                     return reconstructPath(animeParentMap, staffParentMap, end);
                 }
 
@@ -172,11 +175,11 @@ public class AnimeToAnimeService {
                 // add all anime to the queue to explore next
                 for(Anime staffAnime : staffAnimes){
                     // skip already explored anime
-                    if(animeParentMap.containsKey(staffAnime.id))
+                    if(animeParentMap.containsKey(staffAnime.entryId))
                         continue;
 
                     // add curstaff as parent and place in queue
-                    animeParentMap.put(staffAnime.id, curStaff);
+                    animeParentMap.put(staffAnime.entryId, curStaff);
                     animeQueue.add(staffAnime);
                 }
             }
@@ -193,10 +196,10 @@ public class AnimeToAnimeService {
             path.add(0, current);
 
             if(current instanceof Anime)
-                current = animeMap.get(current.id);
+                current = animeMap.get(current.entryId);
             
             else
-                current = staffMap.get(current.id);
+                current = staffMap.get(current.entryId);
         }
 
         return path;
@@ -207,36 +210,28 @@ public class AnimeToAnimeService {
     }
 
     public List<Staff> getAnimeStaff(int id){
-        List<Staff> res = null;
-        StaffList fromRepo = animeRepo.findById(id).orElse(null);
+        List<Staff> res = staffRepo.findAllBySourceId(id);
 
-        if(fromRepo != null)
-            res = fromRepo.staffList;
-        
-        else {
+        if (res == null || res.isEmpty()) {
             res = animeService.getAnimeStaff(id);
 
             final List<Staff> finalRes = res;
             if(res != null)
-                CompletableFuture.runAsync(() -> animeRepo.save(new StaffList(id, finalRes)));
+                CompletableFuture.runAsync(() -> staffRepo.saveAll(finalRes));
         }
 
         return res;
     }
 
     public List<Anime> getStaffAnime(int id){
-        List<Anime> res = null;
-        AnimeList fromRepo = staffRepo.findById(id).orElse(null);
+        List<Anime> res = animeRepo.findAllBySourceId(id);
 
-        if(fromRepo != null)
-            res = fromRepo.animeList;
-
-        else{
+        if(res == null || res.isEmpty()) {
             res = animeService.getStaffAnime(id);
 
             final List<Anime> finalRes = res;
             if(res != null)
-                CompletableFuture.runAsync(() -> staffRepo.save(new AnimeList(id, finalRes)));
+                CompletableFuture.runAsync(() -> animeRepo.saveAll(finalRes));
         }
 
         return res;

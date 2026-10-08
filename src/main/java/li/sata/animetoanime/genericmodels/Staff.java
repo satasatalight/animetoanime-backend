@@ -17,32 +17,43 @@ public class Staff extends Entry {
 
     public Staff() {}
 
-    public Staff(JaikanStaff jaikanStaff) {
+    // for duplicating staff
+    public Staff(Staff s) {
+        this.name = s.name;
+        this.positions.addAll(s.positions);
+        this.imageUrl = s.imageUrl;
+        this.entryId = s.entryId;
+        this.sourceId = s.sourceId;
+    }
+
+    // converting from jaikan to base
+    public Staff(JaikanStaff jaikanStaff, int sourceId) {
         this.name = jaikanStaff.person.name;
         this.positions = jaikanStaff.positions;
         this.imageUrl = jaikanStaff.person.images.firstDefault();
-        this.id = jaikanStaff.person.id;
+        this.entryId = jaikanStaff.person.id;
+        this.sourceId = sourceId;
     }
 
     // place initial list of staff into map
-    public static void fromJaikanStaff(List<JaikanStaff> jaikanStaff, HashMap<Integer, Staff> staffMap) {
+    public static void fromJaikanStaff(List<JaikanStaff> jaikanStaff, HashMap<Integer, Staff> staffMap, int sourceId) {
         for (JaikanStaff staff : jaikanStaff) {
-            Staff newStaff = new Staff(staff);
+            Staff newStaff = new Staff(staff, sourceId);
             staffMap.put(staff.person.id, newStaff);
         }
     }
 
     // extract a full list of voice actors from a character list (one voice actor can voice multiple characters in the same anime)
-    public static void fromJaikanCharacters(List<JaikanCharacter> jaikanCharacters, HashMap<Integer, Staff> staffMap) {
+    public static void fromJaikanCharacters(List<JaikanCharacter> jaikanCharacters, HashMap<Integer, Staff> staffMap, int sourceId) {
         for(JaikanCharacter jaikanCharacter : jaikanCharacters) {
-            fromJaikanCharacter(jaikanCharacter, staffMap);
+            fromJaikanCharacter(jaikanCharacter, staffMap, sourceId);
         }
     }
 
     // merge all VA's from one character into actor map
-    static void fromJaikanCharacter(JaikanCharacter jaikanCharacter, HashMap<Integer, Staff> staffMap) {
+    static void fromJaikanCharacter(JaikanCharacter jaikanCharacter, HashMap<Integer, Staff> staffMap, int sourceId) {
         for(JaikanVoiceActor jaikanVoiceActor : jaikanCharacter.voiceActors) {
-            Staff staff = staffMap.getOrDefault(jaikanVoiceActor.person.id, new VoiceActor(jaikanVoiceActor));
+            Staff staff = staffMap.getOrDefault(jaikanVoiceActor.person.id, new VoiceActor(jaikanVoiceActor, sourceId));
             VoiceActor actor;
 
             // cast up to VA for existing voice actors

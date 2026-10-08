@@ -1,6 +1,5 @@
 package li.sata.animetoanime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 //import static org.mockito.Mockito.when;
@@ -22,9 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 import li.sata.animetoanime.genericmodels.Anime;
 import li.sata.animetoanime.genericmodels.Entry;
 import li.sata.animetoanime.genericmodels.Staff;
-import li.sata.animetoanime.repomodels.AnimeList;
 import li.sata.animetoanime.repomodels.DailyData;
-import li.sata.animetoanime.repomodels.StaffList;
 
 @SpringBootTest
 @ActiveProfiles("dev")
@@ -34,15 +31,15 @@ class RepoTests {
 	Staff staff = new Staff();
 
 	RepoTests(){
-		anime1.id = 9874;
-		anime2.id = 60326;
+		anime1.entryId = 9874;
+		anime2.entryId = 60326;
 		anime1.name = "Touhou Niji Sousaku Doujin Anime: Musou Kakyou";
 		anime2.name = "Watashi ga Koibito ni Nareru Wake Nai jan, Muri Muri! (※Muri ja Nakatta!?)";
 		anime1.imageUrl = "https://cdn.myanimelist.net/images/anime/3/27302l.jpg";
 		anime2.imageUrl = "https://cdn.myanimelist.net/images/anime/1887/150496l.jpg";
 
 		staff.name = "hideaki anno";
-		staff.id = 5111;
+		staff.entryId = 5111;
 	}
 	
 	@Autowired
@@ -58,77 +55,89 @@ class RepoTests {
 	DailyDataRepository dailyRepo;
 
 	@Test
-	void saveAndGetAnimeListTest(){
-		List<Staff> stafflist = service.getAnimeStaff(anime1.id);
-		StaffList staffObject = new StaffList(anime1, stafflist);
+	void saveAndGetStaffListTest(){
+		// get staff list from api
+		List<Staff> staffList = service.getAnimeStaff(anime1.entryId);
 
-		animeRepo.deleteById(anime1.id);
+		// delete existing references in db
+		staffRepo.deleteAllBySourceId(anime1.entryId);
 		
-		StaffList fromRepo = animeRepo.findById(anime1.id).orElse(null);
+		// attempt to get staff list from db (should return null or empty)
+		List<Staff> fromRepo = staffRepo.findAllBySourceId(anime1.entryId);
 
-		if(fromRepo == null){
-			animeRepo.save(staffObject);
-			fromRepo = animeRepo.findById(anime1.id).orElse(null);
+		if(fromRepo == null || fromRepo.isEmpty()){
+			// save api data to db
+			staffRepo.saveAll(staffList);
+
+			// retirieve from db
+			fromRepo = staffRepo.findAllBySourceId(anime1.entryId);
 		}
 
-		assertFalse(fromRepo == null);
-		assertEquals(staffObject.id, fromRepo.id);
+		assertFalse(fromRepo == null || fromRepo.isEmpty()); // prove repo retrieval works
 
 		System.out.println("\nFrom Repo:");
-		for(Staff a : fromRepo.staffList){
+		for(Staff a : fromRepo){
 			System.out.println(a.name);
-			System.out.println("\t" + a.id);
+			System.out.println("\t" + a.entryId);
 			System.out.println("\t" + a.imageUrl);
 			System.out.println("\t" + a.positions);
 			System.out.println();
 		}
 
-		System.out.println("\nFrom Staff Object:");
-		for(Staff a : staffObject.staffList){
+		System.out.println("\nFrom API:");
+		for(Staff a : staffList){
 			System.out.println(a.name);
-			System.out.println("\t" + a.id);
+			System.out.println("\t" + a.entryId);
 			System.out.println("\t" + a.imageUrl);
 			System.out.println("\t" + a.positions);
 			System.out.println();
 		}
 
-		animeRepo.deleteById(anime1.id);
+		// clear for next test
+		staffRepo.deleteAllBySourceId(anime1.entryId);
 	}
 
 	@Test
-	void saveAndGetStaffListTest(){
-		List<Anime> animeList = service.getStaffAnime(staff.id);
-		AnimeList animeObject = new AnimeList(staff, animeList);
+	void saveAndGetAnimeListTest(){
+		// get anime list from api
+		List<Anime> animeList = service.getStaffAnime(staff.entryId);
 
-		staffRepo.deleteById(staff.id);
+		// delete existing ref in db
+		animeRepo.deleteAllBySourceId(staff.entryId);
 		
-		AnimeList fromRepo = staffRepo.findById(staff.id).orElse(null);
+		// try getting anime list from db (should be empty / null)
+		List<Anime> fromRepo = animeRepo.findAllBySourceId(staff.entryId);
 
-		if(fromRepo == null){
-			staffRepo.save(animeObject);
-			fromRepo = staffRepo.findById(staff.id).orElse(null);
+		if(fromRepo == null || fromRepo.isEmpty()){
+			// save api data to db
+			animeRepo.saveAll(animeList);
+
+			// retrieve from db
+			fromRepo = animeRepo.findAllBySourceId(staff.entryId);
 		}
 
-		assertFalse(fromRepo == null);
-		assertEquals(animeObject.id, fromRepo.id);
+		// prove repo retrieval works
+		assertFalse(fromRepo == null || fromRepo.isEmpty());
+		// assertEquals(animeObject.id, fromRepo.id);
 
 		System.out.println("\nFrom Repo:");
-		for(Anime a : fromRepo.animeList){
+		for(Anime a : fromRepo){
 			System.out.println(a.name);
-			System.out.println("\t" + a.id);
+			System.out.println("\t" + a.entryId);
 			System.out.println("\t" + a.imageUrl);
 			System.out.println();
 		}
 
-		System.out.println("\nFrom Staff Object:");
-		for(Anime a : animeObject.animeList){
+		System.out.println("\nFrom API:");
+		for(Anime a : animeList){
 			System.out.println(a.name);
-			System.out.println("\t" + a.id);
+			System.out.println("\t" + a.entryId);
 			System.out.println("\t" + a.imageUrl);
 			System.out.println();
 		}
 
-		staffRepo.deleteById(staff.id);
+		// clear for next test
+		animeRepo.deleteAllBySourceId(staff.entryId);
 	}
 
 	@Test
