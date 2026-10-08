@@ -75,19 +75,24 @@ public class AnimeToAnimeService {
 		List<Staff> staffList2 = getAnimeStaff(anime2.entryId);
 
         // if both are unreachable, give up on search
-        if(staffList1 == null && staffList2 == null)
+        if(staffList1.isEmpty() && staffList2.isEmpty())
             return null;
 
         // start at reachable anime
-        else if(staffList1 == null)
+        else if(staffList1.isEmpty())
             return searchShortestPath(anime2, anime1);
-        else if(staffList2 == null)
+        else if(staffList2.isEmpty())
             return searchShortestPath(anime1, anime2);
 
         // if both are reachable,
         else{
+            // create deep copy of staff list1
+            ArrayList<Staff> intersection = new ArrayList<>();
+            for (Staff staff : staffList1) {
+                intersection.add(new Staff(staff));
+            }
+
             // check for an overlapping staff member
-            List<Staff> intersection = new ArrayList<>(staffList1);
             intersection.retainAll(staffList2);
 
             // shortcut answer if both staff lists contain a matching member

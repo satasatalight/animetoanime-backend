@@ -17,6 +17,16 @@ public class Staff extends Entry {
 
     public Staff() {}
 
+    // for duplicating staff
+    public Staff(Staff s) {
+        this.name = s.name;
+        this.positions.addAll(s.positions);
+        this.imageUrl = s.imageUrl;
+        this.entryId = s.entryId;
+        this.sourceId = s.sourceId;
+    }
+
+    // converting from jaikan to base
     public Staff(JaikanStaff jaikanStaff, int sourceId) {
         this.name = jaikanStaff.person.name;
         this.positions = jaikanStaff.positions;
